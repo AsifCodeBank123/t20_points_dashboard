@@ -12,6 +12,8 @@ body {
     padding: 22px;
     border-radius: 18px;
     margin-bottom: 28px;
+    position: static;
+    overflow: visible;
 }
 
 .section-title {
@@ -67,29 +69,15 @@ body {
     color: #22c55e;
 }
 
+
 /* =================================================
-   RANKING SECTION
+   RANKING SECTION (SCROLL-SAFE)
    ================================================= */
 .ranking-section {
     background: linear-gradient(145deg, #0f172a, #020617);
     border: 2px solid rgba(99,102,241,0.4);
+    border-top: 4px solid #6366f1;
     box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-    position: relative;
-}
-
-.ranking-section::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 4px;
-    width: 100%;
-    background: linear-gradient(
-        90deg,
-        #facc15,
-        #6366f1,
-        #22c55e
-    );
 }
 
 .ranking-title {
@@ -100,6 +88,7 @@ body {
     margin-bottom: 18px;
     color: #e0e7ff;
 }
+
 
 /* =================================================
    DATAFRAME (KEEP LIGHT)
