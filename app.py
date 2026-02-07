@@ -117,13 +117,17 @@ top_player_points = round(top_player_row["player_points"], 1)
 
 
 # --------------------------------------------------
-# PLAYER SUMMARY PER OWNER
+# PLAYER SUMMARY PER OWNER (SORTED BY POINTS DESC)
 # --------------------------------------------------
 player_summary_df = (
     scored_df
     .groupby(["owner_name", "player_name"])["player_points"]
     .sum()
     .reset_index()
+    .sort_values(
+        ["owner_name", "player_points"],
+        ascending=[True, False]
+    )
 )
 
 player_summary_df["player_display"] = (
@@ -136,7 +140,7 @@ player_summary_df["player_display"] = (
 players_per_owner = (
     player_summary_df
     .groupby("owner_name")["player_display"]
-    .apply(lambda x: ", ".join(x))
+    .apply(lambda x: " • ".join(x))
     .reset_index()
     .rename(columns={
         "owner_name": "Owner",
