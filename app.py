@@ -115,7 +115,6 @@ top_player_row = (
 top_player_name = top_player_row["player_name"]
 top_player_points = round(top_player_row["player_points"], 1)
 
-
 # --------------------------------------------------
 # PLAYER SUMMARY PER OWNER (SORTED BY POINTS DESC)
 # --------------------------------------------------
@@ -202,9 +201,17 @@ st.markdown('<div class="section-title">📌 League Snapshot</div>', unsafe_allo
 k1, k2, k3 = st.columns(3)
 
 with k1:
-    st.markdown(f"<div class='kpi-card'><h2>Total Teams</h2><p>{total_teams}</p></div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div class='kpi-card'><h2>Total Teams</h2><p>{total_teams}</p></div>",
+        unsafe_allow_html=True
+    )
+
 with k2:
-    st.markdown(f"<div class='kpi-card'><h2>Top Team</h2><p>{top_team}</p></div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div class='kpi-card'><h2>Top Team</h2><p>{top_team}</p></div>",
+        unsafe_allow_html=True
+    )
+
 with k3:
     st.markdown(
         f"""
@@ -219,23 +226,29 @@ with k3:
         unsafe_allow_html=True
     )
 
-
 st.markdown('</div>', unsafe_allow_html=True)
 
 # --------------------------------------------------
-# RANKING SECTION (SINGLE TABLE, TOP 3 STYLED)
+# RANKING SECTION (STABLE)
 # --------------------------------------------------
 st.markdown('<div class="section ranking-section">', unsafe_allow_html=True)
-st.markdown('<div class="section-title ranking-title">📊 Team Rankings</div>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="section-title ranking-title">📊 Team Rankings</div>',
+    unsafe_allow_html=True
+)
 
 def highlight_top3(row):
     if row["Rank"] == 1:
-        return ["background-color:#facc15;color:black;font-weight:800"] * len(row)
-    if row["Rank"] == 2:
-        return ["background-color:#d1d5db;color:black;font-weight:700"] * len(row)
-    if row["Rank"] == 3:
-        return ["background-color:#fb923c;color:black;font-weight:700"] * len(row)
-    return [""] * len(row)
+        style = "background-color:#facc15;color:black;font-weight:800"
+    elif row["Rank"] == 2:
+        style = "background-color:#d1d5db;color:black;font-weight:700"
+    elif row["Rank"] == 3:
+        style = "background-color:#fb923c;color:black;font-weight:700"
+    else:
+        style = ""
+
+    # Apply style only to first 3 columns
+    return [style, style, style, ""]
 
 styled_team_df = (
     team_df[["Rank", "Owner", "Total Points", "Players (Points)"]]
@@ -260,7 +273,10 @@ st.markdown('</div>', unsafe_allow_html=True)
 # CHARTS SECTION
 # --------------------------------------------------
 st.markdown('<div class="section chart-section">', unsafe_allow_html=True)
-st.markdown('<div class="section-title chart-title">📈 Insights</div>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="section-title chart-title">📈 Insights</div>',
+    unsafe_allow_html=True
+)
 
 fig_team = px.bar(
     team_df,
