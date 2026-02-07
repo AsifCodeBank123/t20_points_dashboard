@@ -1,0 +1,85 @@
+body {
+    background-color: #0e1117;
+}
+
+/* ---------- COMMON ---------- */
+.section {
+    padding: 22px;
+    border-radius: 18px;
+    margin-bottom: 28px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+
+/* ---------- HERO ---------- */
+.hero-section {
+    text-align: center;
+    background: linear-gradient(135deg, #1f2933, #0f172a);
+    border: 1px solid #334155;
+}
+
+.hero-title {
+    font-size: 40px;
+    font-weight: 900;
+    color: #f97316;
+}
+
+.hero-subtitle {
+    font-size: 16px;
+    color: #9ca3af;
+}
+
+/* ---------- KPI ---------- */
+.kpi-section {
+    background: linear-gradient(135deg, #052e16, #022c22);
+    border-left: 6px solid #22c55e;
+}
+
+.kpi-card {
+    background-color: #022c22;
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+}
+
+.kpi-card h2 {
+    font-size: 13px;
+    color: #86efac;
+}
+
+.kpi-card p {
+    font-size: 28px;
+    font-weight: 800;
+    color: #22c55e;
+}
+
+/* ---------- RANKING ---------- */
+.ranking-section {
+    background: linear-gradient(135deg, #1e1b4b, #0f172a);
+    border-left: 6px solid #6366f1;
+}
+
+.ranking-title {
+    color: #c7d2fe;
+}
+
+/* ---------- CHARTS ---------- */
+.chart-section {
+    background: linear-gradient(135deg, #3b0764, #1e1b4b);
+    border-left: 6px solid #a855f7;
+}
+
+.chart-title {
+    color: #e9d5ff;
+}
+
+/* ---------- FOOTER ---------- */
+.footer {
+    text-align: center;
+    color: #6b7280;
+    margin-top: 30px;
+}
