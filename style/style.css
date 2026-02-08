@@ -23,6 +23,21 @@ body {
 }
 
 /* =================================================
+   SECTION DIVIDER
+   ================================================= */
+.section-divider {
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(148,163,184,0.6),
+        transparent
+    );
+    margin: 28px 0;
+}
+
+
+/* =================================================
    HERO
    ================================================= */
 .hero-section {
@@ -43,30 +58,86 @@ body {
 }
 
 /* =================================================
-   KPI
+   KPI SECTION – MODERN & MOBILE FRIENDLY
    ================================================= */
 .kpi-section {
-    background: linear-gradient(135deg, #052e16, #022c22);
-    border-left: 6px solid #22c55e;
+    background: linear-gradient(145deg, #020617, #0b1220);
+    border-radius: 18px;
+    padding: 24px;
 }
 
+/* KPI Card */
 .kpi-card {
-    background-color: #022c22;
-    border-radius: 14px;
-    padding: 18px;
+    background: linear-gradient(160deg, #0f172a, #020617);
+    border-radius: 16px;
+    padding: 20px 16px;
     text-align: center;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
+/* subtle lift on hover (desktop only, harmless on mobile) */
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+}
+
+/* KPI Title */
 .kpi-card h2 {
     font-size: 13px;
-    color: #86efac;
-    margin-bottom: 6px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin-bottom: 8px;
 }
 
+/* KPI Main Value */
 .kpi-card p {
-    font-size: 28px;
+    font-size: 30px;
     font-weight: 800;
-    color: #22c55e;
+    color: #e5e7eb;
+    margin: 0;
+}
+
+/* KPI Secondary text (Top Player points etc.) */
+.kpi-card span {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+/* =================================================
+   KPI COLOR ACCENTS (OPTIONAL, AUTOMATIC)
+   ================================================= */
+.kpi-card:nth-child(1) {
+    border-top: 3px solid #38bdf8; /* blue */
+}
+
+.kpi-card:nth-child(2) {
+    border-top: 3px solid #a78bfa; /* violet */
+}
+
+.kpi-card:nth-child(3) {
+    border-top: 3px solid #22c55e; /* green */
+}
+
+/* =================================================
+   MOBILE OPTIMIZATION
+   ================================================= */
+@media (max-width: 768px) {
+    .kpi-section {
+        padding: 16px;
+    }
+
+    .kpi-card {
+        padding: 18px 14px;
+    }
+
+    .kpi-card p {
+        font-size: 26px;
+    }
 }
 
 

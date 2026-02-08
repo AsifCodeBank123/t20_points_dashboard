@@ -101,6 +101,28 @@ def calculate_points(upto_day: int) -> pd.DataFrame:
 scored_df = calculate_points(selected_day)
 
 # --------------------------------------------------
+# DAY-WISE TEAM POINTS (FOR TREND CHART)
+# --------------------------------------------------
+trend_rows = []
+
+for d in day_numbers:
+    temp_df = calculate_points(d)
+
+    team_points_day = (
+        temp_df
+        .groupby("owner_name")["player_points"]
+        .sum()
+        .reset_index()
+    )
+
+    team_points_day["Day"] = f"Day {d}"
+
+    trend_rows.append(team_points_day)
+
+trend_df = pd.concat(trend_rows, ignore_index=True)
+
+
+# --------------------------------------------------
 # TOP PLAYER
 # --------------------------------------------------
 top_player_row = (
@@ -270,7 +292,7 @@ st.dataframe(
 st.markdown('</div>', unsafe_allow_html=True)
 
 # --------------------------------------------------
-# CHARTS SECTION
+# INSIGHTS SECTION (FINAL LAYOUT)
 # --------------------------------------------------
 st.markdown('<div class="section chart-section">', unsafe_allow_html=True)
 st.markdown(
@@ -278,36 +300,103 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-fig_team = px.bar(
-    team_df,
-    x="Owner",
-    y="Total Points",
-    title="Points by Team",
-    text_auto=True
-)
-fig_team.update_layout(template="plotly_dark", title_x=0.5)
-
-role_df = (
-    scored_df
-    .groupby("role")["player_points"]
-    .sum()
-    .reset_index()
-)
-
-fig_role = px.bar(
-    role_df,
-    x="role",
-    y="player_points",
-    title="Points Contribution by Role",
-    text_auto=True
-)
-fig_role.update_layout(template="plotly_dark", title_x=0.5)
-
+# ==================================================
+# ROW 1: TWO BAR CHARTS SIDE BY SIDE
+# ==================================================
 c1, c2 = st.columns(2)
-c1.plotly_chart(fig_team, use_container_width=True)
-c2.plotly_chart(fig_role, use_container_width=True)
+
+# ---------- CARD 1: POINTS BY TEAM ----------
+with c1:
+    st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="chart-card-title">Points by Team</div>',
+        unsafe_allow_html=True
+    )
+
+    fig_team = px.bar(
+        team_df,
+        x="Owner",
+        y="Total Points",
+        text_auto=True
+    )
+    fig_team.update_layout(
+        template="plotly_dark",
+        #title=None,
+        xaxis_title=None,
+        yaxis_title="Total Points"
+    )
+
+    st.plotly_chart(fig_team, use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ---------- CARD 2: POINTS BY ROLE ----------
+with c2:
+    st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="chart-card-title">Points Contribution by Role</div>',
+        unsafe_allow_html=True
+    )
+
+    role_df = (
+        scored_df
+        .groupby("role")["player_points"]
+        .sum()
+        .reset_index()
+    )
+
+    fig_role = px.bar(
+        role_df,
+        x="role",
+        y="player_points",
+        text_auto=True
+    )
+    fig_role.update_layout(
+        template="plotly_dark",
+        #title=None,
+        xaxis_title="Role",
+        yaxis_title="Points"
+    )
+
+    st.plotly_chart(fig_role, use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ==================================================
+# SLIM DIVIDER
+# ==================================================
+st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
+
+# ==================================================
+# ROW 2: DAY-WISE TREND LINE CHART (FULL WIDTH)
+# ==================================================
+with st.container():
+    st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="chart-card-title">Day-wise Team Performance Trend</div>',
+        unsafe_allow_html=True
+    )
+
+    fig_trend = px.line(
+        trend_df,
+        x="Day",
+        y="player_points",
+        color="owner_name",
+        markers=True
+    )
+
+    fig_trend.update_layout(
+        template="plotly_dark",
+        #title=None, it shows undefined message
+        xaxis_title="Match Day",
+        yaxis_title="Cumulative Points",
+        legend_title="Team"
+    )
+
+    st.plotly_chart(fig_trend, use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+
+
 
 # --------------------------------------------------
 # FOOTER
