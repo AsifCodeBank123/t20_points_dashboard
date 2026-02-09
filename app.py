@@ -4,6 +4,9 @@ import os
 import re
 import plotly.express as px
 
+from config.captains import CAPTAIN_CONFIG
+
+
 # --------------------------------------------------
 # PAGE CONFIG
 # --------------------------------------------------
@@ -67,6 +70,9 @@ st.sidebar.markdown("---")
 st.sidebar.markdown("### 📌 Scoring Rules")
 st.sidebar.write("Captain = 2×")
 st.sidebar.write("Vice Captain = 1.5×")
+
+tab1, tab2 = st.tabs(["🏆 Dashboard", "👥 Player Breakdown"])
+
 
 def get_team_points_for_day(day: int) -> pd.DataFrame:
     temp = calculate_points(day)
@@ -245,219 +251,290 @@ team_df = team_df.merge(
     how="left"
 )
 
-# --------------------------------------------------
-# KPI VALUES
-# --------------------------------------------------
-total_teams = team_df.shape[0]
-top_team = team_df.iloc[0]["Owner"]
-total_points = round(team_df["Total Points"].sum(), 1)
-
-# --------------------------------------------------
-# HERO SECTION
-# --------------------------------------------------
-st.markdown(f"""
-<div class="section hero-section">
-    <div class="hero-title">🏆 Fantasy T20 Rankings</div>
-    <div class="hero-subtitle">
-        Cumulative leaderboard up to Day {selected_day}
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-# --------------------------------------------------
-# KPI SECTION
-# --------------------------------------------------
-st.markdown('<div class="section kpi-section">', unsafe_allow_html=True)
-st.markdown('<div class="section-title">📌 League Snapshot</div>', unsafe_allow_html=True)
-
-k1, k2, k3 = st.columns(3)
-
-with k1:
-    st.markdown(
-        f"<div class='kpi-card'><h2>Total Teams</h2><p>{total_teams}</p></div>",
-        unsafe_allow_html=True
-    )
-
-with k2:
-    st.markdown(
-        f"<div class='kpi-card'><h2>Top Team</h2><p>{top_team}</p></div>",
-        unsafe_allow_html=True
-    )
-
-with k3:
-    st.markdown(
-        f"""
-        <div class='kpi-card'>
-            <h2>Top Player</h2>
-            <p>{top_player_name}</p>
-            <span style="font-size:14px;color:#9ca3af;">
-                {top_player_points} pts
-            </span>
+with tab1:
+    # --------------------------------------------------
+    # HERO SECTION
+    # --------------------------------------------------
+    st.markdown(f"""
+    <div class="section hero-section">
+        <div class="hero-title">🏆 Fantasy T20 Rankings</div>
+        <div class="hero-subtitle">
+            Cumulative leaderboard up to Day {selected_day}
         </div>
-        """,
-        unsafe_allow_html=True
-    )
+    </div>
+    """, unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True)
+    # --------------------------------------------------
+    # KPI VALUES
+    # --------------------------------------------------
+    total_teams = team_df.shape[0]
+    top_team = team_df.iloc[0]["Owner"]
+    total_points = round(team_df["Total Points"].sum(), 1)
 
-# --------------------------------------------------
-# RANKING SECTION (STABLE)
-# --------------------------------------------------
-st.markdown('<div class="section ranking-section">', unsafe_allow_html=True)
-st.markdown(
-    '<div class="section-title ranking-title">📊 Team Rankings</div>',
-    unsafe_allow_html=True
-)
+    # --------------------------------------------------
+    # KPI SECTION
+    # --------------------------------------------------
+    st.markdown('<div class="section kpi-section">', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">📌 League Snapshot</div>', unsafe_allow_html=True)
 
-def overtake_label(x):
-    if x > 0:
-        return f"▲ +{x}"
-    if x < 0:
-        return f"▼ {x}"
-    return "— 0"
+    k1, k2, k3 = st.columns(3)
 
-team_df["Movement"] = team_df["Owner"].map(overtake_scores)
-team_df["Movement"] = team_df["Movement"].apply(overtake_label)
+    with k1:
+        st.markdown(
+            f"<div class='kpi-card'><h2>Total Teams</h2><p>{total_teams}</p></div>",
+            unsafe_allow_html=True
+        )
 
+    with k2:
+        st.markdown(
+            f"<div class='kpi-card'><h2>Top Team</h2><p>{top_team}</p></div>",
+            unsafe_allow_html=True
+        )
 
-def highlight_top3(row):
-    if row["Rank"] == 1:
-        style = "background-color:#facc15;color:black;font-weight:800"
-    elif row["Rank"] == 2:
-        style = "background-color:#d1d5db;color:black;font-weight:700"
-    elif row["Rank"] == 3:
-        style = "background-color:#fb923c;color:black;font-weight:700"
-    else:
-        style = ""
+    with k3:
+        st.markdown(
+            f"""
+            <div class='kpi-card'>
+                <h2>Top Player</h2>
+                <p>{top_player_name}</p>
+                <span style="font-size:14px;color:#9ca3af;">
+                    {top_player_points} pts
+                </span>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-    # Apply style only to first 3 columns
-    return [style, style, style, style, ""]
-
-styled_team_df = (
-    team_df[["Rank", "Owner", "Total Points", "Movement","Players (Points)"]]
-    .style
-    .format({"Total Points": "{:.1f}"})
-    .apply(highlight_top3, axis=1)
-    .set_properties(**{"text-align": "center"})
-    .set_table_styles(
-        [{"selector": "th", "props": [("text-align", "center")]}]
-    )
-)
-
-st.dataframe(
-    styled_team_df,
-    use_container_width=True,
-    hide_index=True
-)
-
-st.markdown('</div>', unsafe_allow_html=True)
-
-# --------------------------------------------------
-# INSIGHTS SECTION (FINAL LAYOUT)
-# --------------------------------------------------
-st.markdown('<div class="section chart-section">', unsafe_allow_html=True)
-st.markdown(
-    '<div class="section-title chart-title">📈 Insights</div>',
-    unsafe_allow_html=True
-)
-
-# ==================================================
-# ROW 1: TWO BAR CHARTS SIDE BY SIDE
-# ==================================================
-c1, c2 = st.columns(2)
-
-# ---------- CARD 1: POINTS BY TEAM ----------
-with c1:
-    st.markdown('<div class="chart-card">', unsafe_allow_html=True)
-    st.markdown(
-        '<div class="chart-card-title">Points by Team</div>',
-        unsafe_allow_html=True
-    )
-
-    fig_team = px.bar(
-        team_df,
-        x="Owner",
-        y="Total Points",
-        text_auto=True
-    )
-    fig_team.update_layout(
-        template="plotly_dark",
-        #title=None,
-        xaxis_title=None,
-        yaxis_title="Total Points"
-    )
-
-    st.plotly_chart(fig_team, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ---------- CARD 2: POINTS BY ROLE ----------
-with c2:
-    st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+    # --------------------------------------------------
+    # RANKING SECTION (STABLE)
+    # --------------------------------------------------
+    st.markdown('<div class="section ranking-section">', unsafe_allow_html=True)
     st.markdown(
-        '<div class="chart-card-title">Points Contribution by Role</div>',
+        '<div class="section-title ranking-title">📊 Team Rankings</div>',
         unsafe_allow_html=True
     )
 
-    role_df = (
+    def overtake_label(x):
+        if x > 0:
+            return f"▲ +{x}"
+        if x < 0:
+            return f"▼ {x}"
+        return "— 0"
+
+    team_df["Movement"] = team_df["Owner"].map(overtake_scores)
+    team_df["Movement"] = team_df["Movement"].apply(overtake_label)
+
+
+    def highlight_top3(row):
+        if row["Rank"] == 1:
+            style = "background-color:#facc15;color:black;font-weight:800"
+        elif row["Rank"] == 2:
+            style = "background-color:#d1d5db;color:black;font-weight:700"
+        elif row["Rank"] == 3:
+            style = "background-color:#fb923c;color:black;font-weight:700"
+        else:
+            style = ""
+
+        # Apply style only to first 3 columns
+        return [style, style, style, style, ""]
+
+    styled_team_df = (
+        team_df[["Rank", "Owner", "Total Points", "Movement","Players (Points)"]]
+        .style
+        .format({"Total Points": "{:.1f}"})
+        .apply(highlight_top3, axis=1)
+        .set_properties(**{"text-align": "center"})
+        .set_table_styles(
+            [{"selector": "th", "props": [("text-align", "center")]}]
+        )
+    )
+
+    st.dataframe(
+        styled_team_df,
+        use_container_width=True,
+        hide_index=True
+    )
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # --------------------------------------------------
+    # INSIGHTS SECTION (FINAL LAYOUT)
+    # --------------------------------------------------
+    st.markdown('<div class="section chart-section">', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section-title chart-title">📈 Insights</div>',
+        unsafe_allow_html=True
+    )
+
+    # ==================================================
+    # ROW 1: TWO BAR CHARTS SIDE BY SIDE
+    # ==================================================
+    c1, c2 = st.columns(2)
+
+    # ---------- CARD 1: POINTS BY TEAM ----------
+    with c1:
+        st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="chart-card-title">Points by Team</div>',
+            unsafe_allow_html=True
+        )
+
+        fig_team = px.bar(
+            team_df,
+            x="Owner",
+            y="Total Points",
+            text_auto=True
+        )
+        fig_team.update_layout(
+            template="plotly_dark",
+            #title=None,
+            xaxis_title=None,
+            yaxis_title="Total Points"
+        )
+
+        st.plotly_chart(fig_team, use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # ---------- CARD 2: POINTS BY ROLE ----------
+    with c2:
+        st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="chart-card-title">Points Contribution by Role</div>',
+            unsafe_allow_html=True
+        )
+
+        role_df = (
+            scored_df
+            .groupby("role")["player_points"]
+            .sum()
+            .reset_index()
+        )
+
+        fig_role = px.bar(
+            role_df,
+            x="role",
+            y="player_points",
+            text_auto=True
+        )
+        fig_role.update_layout(
+            template="plotly_dark",
+            #title=None,
+            xaxis_title="Role",
+            yaxis_title="Points"
+        )
+
+        st.plotly_chart(fig_role, use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # ==================================================
+    # SLIM DIVIDER
+    # ==================================================
+    st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
+
+    # ==================================================
+    # ROW 2: DAY-WISE TREND LINE CHART (FULL WIDTH)
+    # ==================================================
+    with st.container():
+        st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="chart-card-title">Day-wise Team Performance Trend</div>',
+            unsafe_allow_html=True
+        )
+
+        fig_trend = px.line(
+            trend_df,
+            x="Day",
+            y="player_points",
+            color="owner_name",
+            markers=True
+        )
+
+        fig_trend.update_layout(
+            template="plotly_dark",
+            #title=None, it shows undefined message
+            xaxis_title="Match Day",
+            yaxis_title="Cumulative Points",
+            legend_title="Team"
+        )
+
+        st.plotly_chart(fig_trend, use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+
+# ==================================================
+# TAB 2: PLAYER BREAKDOWN
+# ==================================================
+with tab2:
+    st.markdown("## 👥 Player Breakdown by Owner")
+
+    owner_list = sorted(df["owner_name"].unique())
+    selected_owner = st.selectbox(
+        "Select Owner",
+        owner_list
+    )
+
+    # Filter players for selected owner
+    owner_df = (
         scored_df
-        .groupby("role")["player_points"]
+        .loc[scored_df["owner_name"] == selected_owner]
+        .groupby(["player_name", "role"])["player_points"]
         .sum()
         .reset_index()
+        .sort_values("player_points", ascending=False)
     )
 
-    fig_role = px.bar(
-        role_df,
-        x="role",
-        y="player_points",
-        text_auto=True
+    # Captain / VC from config
+    captain = CAPTAIN_CONFIG.get(selected_owner, {}).get("C")
+    vice_captain = CAPTAIN_CONFIG.get(selected_owner, {}).get("VC")
+
+    # Add C / VC indicator
+    def cv_label(player):
+        if player == captain:
+            return "🧢 Captain"
+        if player == vice_captain:
+            return "🎖️ Vice Captain"
+        return ""
+
+    owner_df["C / VC"] = owner_df["player_name"].apply(cv_label)
+
+    # Rename columns for display
+    owner_df = owner_df.rename(columns={
+        "player_name": "Player",
+        "role": "Role",
+        "player_points": "Points"
+    })
+
+    owner_df["Points"] = owner_df["Points"].astype(float).round(1)
+
+    def highlight_cv(row):
+        if row["C / VC"] == "🧢 Captain":
+            return [
+                "background-color:rgba(251,191,36,0.15);"
+                "border-left:4px solid #fbbf24;"
+                "font-weight:600"
+            ] * len(row)
+
+        if row["C / VC"] == "🎖️ Vice Captain":
+            return [
+                "background-color:rgba(56,189,248,0.15);"
+                "border-left:4px solid #38bdf8;"
+                "font-weight:600"
+            ] * len(row)
+
+        return [""] * len(row)
+
+
+    styled_owner_df = owner_df.style.format({"Points": "{:.1f}"}).apply(highlight_cv, axis=1)
+
+    st.dataframe(
+        styled_owner_df,
+        use_container_width=True,
+        hide_index=True
     )
-    fig_role.update_layout(
-        template="plotly_dark",
-        #title=None,
-        xaxis_title="Role",
-        yaxis_title="Points"
-    )
-
-    st.plotly_chart(fig_role, use_container_width=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-# ==================================================
-# SLIM DIVIDER
-# ==================================================
-st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
-
-# ==================================================
-# ROW 2: DAY-WISE TREND LINE CHART (FULL WIDTH)
-# ==================================================
-with st.container():
-    st.markdown('<div class="chart-card">', unsafe_allow_html=True)
-    st.markdown(
-        '<div class="chart-card-title">Day-wise Team Performance Trend</div>',
-        unsafe_allow_html=True
-    )
-
-    fig_trend = px.line(
-        trend_df,
-        x="Day",
-        y="player_points",
-        color="owner_name",
-        markers=True
-    )
-
-    fig_trend.update_layout(
-        template="plotly_dark",
-        #title=None, it shows undefined message
-        xaxis_title="Match Day",
-        yaxis_title="Cumulative Points",
-        legend_title="Team"
-    )
-
-    st.plotly_chart(fig_trend, use_container_width=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-st.markdown('</div>', unsafe_allow_html=True)
-
-
 
 # --------------------------------------------------
 # FOOTER
