@@ -135,7 +135,7 @@ for d in day_numbers:
 trend_df = pd.concat(trend_rows, ignore_index=True)
 
 # --------------------------------------------------
-# TEAM OVERTAKE INDICATOR (FIXED, NO DOUBLE COUNT)
+# TEAM OVERTAKE INDICATOR (DAY 1 SAFE)
 # --------------------------------------------------
 if selected_day > 1:
     today_df = get_team_points_for_day(selected_day)
@@ -156,7 +156,6 @@ if selected_day > 1:
             yesterday_diff = yesterday_points[team] - yesterday_points[other]
             today_diff = today_points[team] - today_points[other]
 
-            # Only count if sign flipped
             if yesterday_diff < 0 and today_diff > 0:
                 score += 1
             elif yesterday_diff > 0 and today_diff < 0:
@@ -164,7 +163,11 @@ if selected_day > 1:
 
         overtake_scores[team] = score
 else:
-    overtake_scores = {team: 0 for team in team_df["Owner"]}
+    # Day 1: no overtakes possible
+    overtake_scores = {
+        team: 0
+        for team in df["owner_name"].unique()
+    }
 
 
 
