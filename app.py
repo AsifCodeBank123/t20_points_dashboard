@@ -43,6 +43,17 @@ df.columns = (
 )
 
 # --------------------------------------------------
+# LOAD MATCH TEAMS BY DAY
+# --------------------------------------------------
+MATCH_PATH = "data/matches_by_day.csv"
+
+if os.path.exists(MATCH_PATH):
+    matches_df = pd.read_csv(MATCH_PATH)
+else:
+    matches_df = pd.DataFrame(columns=["Day", "Teams"])
+
+
+# --------------------------------------------------
 # DETECT DAY COLUMNS
 # --------------------------------------------------
 day_cols = [c for c in df.columns if re.fullmatch(r"day\d+", c)]
@@ -70,6 +81,40 @@ st.sidebar.markdown("---")
 st.sidebar.markdown("### 📌 Scoring Rules")
 st.sidebar.write("Captain = 2×")
 st.sidebar.write("Vice Captain = 1.5×")
+
+# --------------------------------------------------
+# COUNTRIES PLAYING ON SELECTED DAY (NEW CSV FORMAT)
+# --------------------------------------------------
+day_row = matches_df[matches_df["Day"] == selected_day]
+
+playing_countries = set()
+
+if not day_row.empty:
+    teams_str = day_row.iloc[0]["Teams"]
+    playing_countries = {
+        t.strip() for t in teams_str.split(",")
+    }
+
+
+# --------------------------------------------------
+# BUILD WATCHLIST PER OWNER (BASED ON MATCHES)
+# --------------------------------------------------
+owner_watch_map = {}
+
+for owner, group in df.groupby("owner_name"):
+    watch_players = (
+        group[group["country"].isin(playing_countries)]
+        ["player_name"]
+        .unique()
+        .tolist()
+    )
+
+    if watch_players:
+        owner_watch_map[owner] = ", ".join(sorted(watch_players))
+    else:
+        owner_watch_map[owner] = "—"
+
+
 
 tab1, tab2 = st.tabs(["🏆 Dashboard", "👥 Player Breakdown"])
 
@@ -251,6 +296,9 @@ team_df = team_df.merge(
     how="left"
 )
 
+team_df["Watchlist"] = team_df["Owner"].map(owner_watch_map)
+
+
 with tab1:
     # --------------------------------------------------
     # HERO SECTION
@@ -341,7 +389,7 @@ with tab1:
         return [style, style, style, style, ""]
 
     styled_team_df = (
-        team_df[["Rank", "Owner", "Total Points", "Movement","Players (Points)"]]
+        team_df[["Rank", "Owner", "Total Points", "Movement","Watchlist"]]
         .style
         .format({"Total Points": "{:.1f}"})
         .apply(highlight_top3, axis=1)
