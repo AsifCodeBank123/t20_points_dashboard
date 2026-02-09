@@ -68,6 +68,19 @@ st.sidebar.markdown("### 📌 Scoring Rules")
 st.sidebar.write("Captain = 2×")
 st.sidebar.write("Vice Captain = 1.5×")
 
+def get_team_points_for_day(day: int) -> pd.DataFrame:
+    temp = calculate_points(day)
+    return (
+        temp
+        .groupby("owner_name")["player_points"]
+        .sum()
+        .reset_index()
+        .rename(columns={
+            "owner_name": "Owner",
+            "player_points": "Points"
+        })
+    )
+
 # --------------------------------------------------
 # POINT CALCULATION
 # --------------------------------------------------
@@ -120,6 +133,40 @@ for d in day_numbers:
     trend_rows.append(team_points_day)
 
 trend_df = pd.concat(trend_rows, ignore_index=True)
+
+# --------------------------------------------------
+# TEAM OVERTAKE INDICATOR (FIXED, NO DOUBLE COUNT)
+# --------------------------------------------------
+if selected_day > 1:
+    today_df = get_team_points_for_day(selected_day)
+    yesterday_df = get_team_points_for_day(selected_day - 1)
+
+    today_points = dict(zip(today_df["Owner"], today_df["Points"]))
+    yesterday_points = dict(zip(yesterday_df["Owner"], yesterday_df["Points"]))
+
+    teams = list(today_points.keys())
+    overtake_scores = {}
+
+    for team in teams:
+        score = 0
+        for other in teams:
+            if team == other:
+                continue
+
+            yesterday_diff = yesterday_points[team] - yesterday_points[other]
+            today_diff = today_points[team] - today_points[other]
+
+            # Only count if sign flipped
+            if yesterday_diff < 0 and today_diff > 0:
+                score += 1
+            elif yesterday_diff > 0 and today_diff < 0:
+                score -= 1
+
+        overtake_scores[team] = score
+else:
+    overtake_scores = {team: 0 for team in team_df["Owner"]}
+
+
 
 
 # --------------------------------------------------
@@ -259,6 +306,17 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+def overtake_label(x):
+    if x > 0:
+        return f"▲ +{x}"
+    if x < 0:
+        return f"▼ {x}"
+    return "— 0"
+
+team_df["Movement"] = team_df["Owner"].map(overtake_scores)
+team_df["Movement"] = team_df["Movement"].apply(overtake_label)
+
+
 def highlight_top3(row):
     if row["Rank"] == 1:
         style = "background-color:#facc15;color:black;font-weight:800"
@@ -270,10 +328,10 @@ def highlight_top3(row):
         style = ""
 
     # Apply style only to first 3 columns
-    return [style, style, style, ""]
+    return [style, style, style, style, ""]
 
 styled_team_df = (
-    team_df[["Rank", "Owner", "Total Points", "Players (Points)"]]
+    team_df[["Rank", "Owner", "Total Points", "Movement","Players (Points)"]]
     .style
     .format({"Total Points": "{:.1f}"})
     .apply(highlight_top3, axis=1)
