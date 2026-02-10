@@ -5,13 +5,13 @@ Asif,Andries Gous,USA,520,Batter,0,0,22,0,0,0,0,0,0,0,0,0
 Asif,Darwish Rasooli,Afghanistan,400,Batter,0,0,0,0,0,38,0,0,0,0,0,0
 Asif,Dushmantha Chameera,Srilanka,420,Bowler,0,0,0,0,0,50,0,0,0,0,0,0
 Asif,Harry Tector,Ireland,50,Batter,0,0,0,0,0,54,0,0,0,0,0,0
-Asif,Lungi Ngidi,South Africa,650,Bowler,0,0,0,0,0,0,0,0,0,0,0,0
+Asif,Lungi Ngidi,South Africa,650,Bowler,0,0,0,0,0,0,0,0,146,0,0,0
 Asif,Johnson Charles,West Indies,260,Batter,0,0,0,0,0,0,0,0,0,0,0,0
 Asif,Louren Steenkamp,Namibia,200,Batter,0,0,0,0,0,0,0,0,0,0,0,0
 Asif,Matthew Renshaw,Australia,200,Batter,0,0,0,0,0,0,0,0,0,0,0,0
 Asif,Milind Kumar,USA,50,All-rounder,0,0,88,0,0,0,0,0,0,0,0,0
 Asif,Naseem Shah,Pakistan,200,Bowler,0,0,0,0,0,0,0,0,0,0,0,0
-Asif,Quinton de Kock,South Africa,1450,Wicket-keeper/Batter,0,0,0,0,0,0,0,0,0,0,0,0
+Asif,Quinton de Kock,South Africa,1450,Wicket-keeper/Batter,0,1,0,0,1,0,0,1,57,0,1,0
 Asif,Saim Ayub,Pakistan,1350,Batter,0,0,118,0,0,0,0,0,0,0,0,0
 Asif,Tom Banton,England,800,Wicket-keeper/Batter,0,0,0,0,0,14,0,0,0,0,0,0
 Asif,Wellington Masakadza,Zimbabwe,210,Bowler,0,0,0,0,0,0,0,0,11,0,0,0
@@ -23,7 +23,7 @@ Johnson,Harry Brook,England,790,Batter,0,0,0,0,0,103,0,0,0,0,0,0
 Johnson,Kuldeep Yadav,India,200,Bowler,0,0,0,0,0,0,0,0,0,0,0,0
 Johnson,Kusal Janith Perera,Srilanka,320,Batter,0,0,0,0,0,0,0,0,0,0,0,0
 Johnson,Liam Dawson,England,300,All-rounder,0,0,0,0,0,78,0,0,0,0,0,0
-Johnson,Marco Jansen,South Africa,700,All-rounder,0,0,0,0,0,0,0,0,0,0,0,0
+Johnson,Marco Jansen,South Africa,700,All-rounder,0,0,0,0,0,0,0,0,76,0,0,0
 Johnson,Marcus Stoinis,Australia,490,All-rounder,0,0,0,0,0,0,0,0,0,0,0,0
 Johnson,Mark Chapman,New Zealand,450,Batter,0,0,0,0,0,54,0,0,0,0,0,0
 Johnson,Mitchell Marsh,Australia,1750,All-rounder,1,0,0,1,0,0,1,0,0,0,0,0
@@ -34,8 +34,8 @@ Johnson,Rovman Powell,West Indies,430,All-rounder,0,0,58,0,0,0,0,0,0,0,0,0
 Johnson,Wanindu Hasaranga,Srilanka,610,All-rounder,0,0,0,0,0,116,0,0,0,0,0,0
 Lalit,Babar Azam,Pakistan,350,Batter,0,0,31,0,0,0,0,0,0,0,0,0
 Lalit,Bas de Leede,Netherlands,110,All-rounder,0,0,56,0,0,0,0,0,0,0,0,0
-Lalit,Corbin Bosch,South Africa,220,Bowler,0,0,0,0,0,0,0,0,0,0,0,0
-Lalit,David Miller,South Africa,410,Batter,0,0,0,0,0,0,0,0,0,0,0,0
+Lalit,Corbin Bosch,South Africa,220,Bowler,0,0,0,0,0,0,0,0,52,0,0,0
+Lalit,David Miller,South Africa,410,Batter,0,0,0,0,0,0,0,0,73,0,0,0
 Lalit,Devon Conway,New Zealand,880,Wicket-keeper/Batter,0,0,0,0,0,0,0,0,0,0,0,0
 Lalit,Harmeet Singh,USA,50,All-rounder,0,0,75,0,0,0,0,0,0,0,0,0
 Lalit,Ish Sodhi,New Zealand,620,Bowler,0,0,0,0,0,0,0,0,0,0,0,0
@@ -64,7 +64,7 @@ Sanskar,Monank Patel,USA,310,Wicket-keeper/Batter,0,0,10,0,0,0,0,0,0,0,0,0
 Sanskar,Noor Ahmad,Afghanistan,400,Bowler,0,0,0,0,0,0,0,0,0,0,0,0
 Sanskar,Romario Shepherd,West Indies,400,All-rounder,0,0,211,0,0,0,0,0,0,0,0,0
 Sanskar,Shubham Ranjane,USA,50,All-rounder,0,0,81,0,0,0,0,0,0,0,0,0
-Sanskar,Tristan Stubbs,South Africa,520,Batter,0,0,0,0,0,0,0,0,0,0,0,0
+Sanskar,Tristan Stubbs,South Africa,520,Batter,0,0,0,0,0,0,0,0,84,0,0,0
 Sanskar,Will Jacks,England,870,All-rounder,0,0,0,0,0,122,0,0,0,0,0,0
 Willy & Umesh,Blessing Muzarabani,Zimbabwe,100,Bowler,0,0,0,0,0,0,0,0,139,0,0,0
 Willy & Umesh,Daryl Mitchell,New Zealand,1000,All-rounder,0,0,0,0,0,49,0,0,0,0,0,0
@@ -90,8 +90,8 @@ Somansh,James Neesham,New Zealand,210,All-rounder,0,0,0,0,0,11,0,0,0,0,0,0
 Somansh,Jayden Seales,West Indies,180,Bowler,0,0,0,0,0,0,0,0,0,0,0,0
 Somansh,JJ Smit,Namibia,70,All-rounder,0,0,0,0,0,0,0,0,0,0,0,0
 Somansh,Richard Nagrava,Zimbabwe,510,Bowler,0,0,0,0,0,0,0,0,132,0,0,0
-Somansh,Kagiso Rabada,South Africa,510,Bowler,0,0,0,0,0,0,0,0,0,0,0,0
-Somansh,Keshav Maharaj,South Africa,480,Bowler,0,0,0,0,0,0,0,0,0,0,0,0
+Somansh,Kagiso Rabada,South Africa,510,Bowler,0,0,0,0,0,0,0,0,65,0,0,0
+Somansh,Keshav Maharaj,South Africa,480,Bowler,0,0,0,0,0,0,0,0,12,0,0,0
 Somansh,Kyle Jamieson,New Zealand,260,Bowler,0,0,0,0,0,0,0,0,0,0,0,0
 Somansh,Max O'Dowd,Netherlands,50,Batter,0,0,13,0,0,0,0,0,0,0,0,0
 Somansh,Mohammad Nawaz,Pakistan,560,All-rounder,0,0,78,0,0,0,0,0,0,0,0,0
@@ -111,7 +111,7 @@ Pritam,Michael Jones,Scotland,50,Batter,0,0,21,0,0,0,0,0,69,0,0,0
 Pritam,Mitchell Santner,New Zealand,640,All-rounder,0,1,0,0,1,45,0,1,0,0,0,0
 Pritam,Paul Stirling,Ireland,350,Batter,0,0,0,0,0,16,0,0,0,0,0,0
 Pritam,Roston Chase,West Indies,800,All-rounder,0,0,0,0,0,0,0,0,0,0,0,0
-Pritam,Ryan Rickleton,South Africa,1850,Wicket-keeper/Batter,0,0,0,0,0,0,0,0,0,0,0,0
+Pritam,Ryan Rickleton,South Africa,1850,Wicket-keeper/Batter,0,0,0,0,0,0,0,0,63,0,0,0
 Pritam,Sanju Samson,India,360,Wicket-keeper/Batter,0,0,0,0,0,0,0,0,0,0,0,0
 Pritam,Sediqullah Atal,Afghanistan,310,Batter,0,0,0,0,0,45,0,0,0,0,0,0
 Pritam,Shai Hope,West Indies,950,Wicket-keeper/Batter,0,0,31,0,0,0,0,0,0,0,0,0
@@ -119,7 +119,7 @@ Pritam,Usman Khan,Pakistan,380,Batter,0,0,18,0,0,0,0,0,0,0,0,0
 Pritam,Washington Sundar,India,200,All-rounder,0,0,0,0,0,0,0,0,0,0,0,0
 Rachita & Pritesh,Abrar Ahmed,Pakistan,550,Bowler,0,0,84,0,0,0,0,0,0,0,0,0
 Rachita & Pritesh,Axar Patel,India,740,All-rounder,0,0,98,0,0,0,0,0,0,0,0,0
-Rachita & Pritesh,Dewald Brevis,South Africa,860,Batter,0,0,0,0,0,0,0,0,0,0,0,0
+Rachita & Pritesh,Dewald Brevis,South Africa,860,Batter,0,0,0,0,0,0,0,0,14,0,0,0
 Rachita & Pritesh,George Linde,South Africa,760,All-rounder,0,0,0,0,0,0,0,0,0,0,0,0
 Rachita & Pritesh,George Munsey,Scotland,50,Batter,0,0,43,0,0,0,0,0,204,0,0,0
 Rachita & Pritesh,Ishan Kishan,India,2700,Wicket-keeper/Batter,1,0,52,1,0,0,1,0,0,0,0,0
@@ -134,7 +134,7 @@ Rachita & Pritesh,Shayan Jahangir,USA,50,Batter,0,0,0,0,0,0,0,0,0,0,0,0
 Rachita & Pritesh,Shimron Hetmyer,West Indies,440,Batter,0,1,134,0,1,0,0,1,0,0,0,0
 Rachita & Pritesh,Tadiwanashe Marumani,Zimbabwe,100,Batter,0,0,0,0,0,0,0,0,51,0,0,0
 Rachita & Pritesh,Tim Seifert,New Zealand,460,Wicket-keeper/Batter,0,0,0,0,0,143,0,0,0,0,0,0
-Mahesh,Aiden Markram,South Africa,2200,Batter,0,0,0,0,0,0,0,0,0,0,0,0
+Mahesh,Aiden Markram,South Africa,2200,Batter,1,0,0,1,0,0,1,0,123,1,0,0
 Mahesh,Azmatullah Omarzai,Afghanistan,550,All-rounder,0,0,0,0,0,73,0,0,0,0,0,0
 Mahesh,Curtis Campher,Ireland,50,All-rounder,0,0,0,0,0,21,0,0,0,0,0,0
 Mahesh,Dunith Wellalage,Srilanka,220,All-rounder,0,0,0,0,0,55,0,0,0,0,0,0
