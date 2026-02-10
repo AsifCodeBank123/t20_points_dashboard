@@ -529,7 +529,7 @@ with tab2:
     owner_df = (
         scored_df
         .loc[scored_df["owner_name"] == selected_owner]
-        .groupby(["player_name", "role"])["player_points"]
+        .groupby(["player_name", "role", "country"])["player_points"]
         .sum()
         .reset_index()
         .sort_values("player_points", ascending=False)
@@ -553,6 +553,7 @@ with tab2:
     owner_df = owner_df.rename(columns={
         "player_name": "Player",
         "role": "Role",
+        "country": "Country",
         "player_points": "Points"
     })
 
