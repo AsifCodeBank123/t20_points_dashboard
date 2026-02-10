@@ -520,13 +520,10 @@ with tab2:
     st.markdown("## 👥 Player Breakdown by Owner")
 
     owner_list = sorted(df["owner_name"].unique())
-    selected_owner = st.selectbox(
-        "Select Owner",
-        owner_list
-    )
+    selected_owner = st.selectbox("Select Owner", owner_list)
 
-    # Filter players for selected owner
-    owner_df = (
+    # Aggregate points per player (SAFE)
+    owner_points_df = (
         scored_df
         .loc[scored_df["owner_name"] == selected_owner]
         .groupby(["player_name", "role", "country"])["player_points"]
@@ -535,11 +532,48 @@ with tab2:
         .sort_values("player_points", ascending=False)
     )
 
+    # Helper: compute match-wise gains (NO ZERO)
+    def get_player_daywise_gains(player_name):
+        player_rows = df[
+            (df["owner_name"] == selected_owner) &
+            (df["player_name"] == player_name)
+        ]
+
+        gains = []
+
+        for d in range(1, selected_day + 1):
+            day_col = f"day{d}"
+            c_col = f"c_day{d}"
+            vc_col = f"vc_day{d}"
+
+            if day_col not in player_rows:
+                continue
+
+            points = pd.to_numeric(player_rows.iloc[0][day_col], errors="coerce")
+            points = 0 if pd.isna(points) else points
+
+            multiplier = 1.0
+            if c_col in player_rows and player_rows.iloc[0][c_col] == 1:
+                multiplier = 2.0
+            elif vc_col in player_rows and player_rows.iloc[0][vc_col] == 1:
+                multiplier = 1.5
+
+            value = round(points * multiplier, 1)
+
+            if value != 0:
+                gains.append(value)
+
+        return "—" if not gains else f"({', '.join(str(g) for g in gains)})"
+
+    # Add match-wise gains AFTER grouping
+    owner_points_df["Match-wise Gains"] = owner_points_df["player_name"].apply(
+        get_player_daywise_gains
+    )
+
     # Captain / VC from config
     captain = CAPTAIN_CONFIG.get(selected_owner, {}).get("C")
     vice_captain = CAPTAIN_CONFIG.get(selected_owner, {}).get("VC")
 
-    # Add C / VC indicator
     def cv_label(player):
         if player == captain:
             return "🧢 Captain"
@@ -547,18 +581,17 @@ with tab2:
             return "🎖️ Vice Captain"
         return ""
 
-    owner_df["C / VC"] = owner_df["player_name"].apply(cv_label)
+    owner_points_df["C / VC"] = owner_points_df["player_name"].apply(cv_label)
 
-    # Rename columns for display
-    owner_df = owner_df.rename(columns={
+    # Rename for display
+    owner_points_df = owner_points_df.rename(columns={
         "player_name": "Player",
         "role": "Role",
         "country": "Country",
         "player_points": "Points"
     })
 
-    owner_df["Points"] = owner_df["Points"].astype(float).round(1)
-
+    # Styling
     def highlight_cv(row):
         if row["C / VC"] == "🧢 Captain":
             return [
@@ -566,24 +599,27 @@ with tab2:
                 "border-left:4px solid #fbbf24;"
                 "font-weight:600"
             ] * len(row)
-
         if row["C / VC"] == "🎖️ Vice Captain":
             return [
                 "background-color:rgba(56,189,248,0.15);"
                 "border-left:4px solid #38bdf8;"
                 "font-weight:600"
             ] * len(row)
-
         return [""] * len(row)
 
-
-    styled_owner_df = owner_df.style.format({"Points": "{:.1f}"}).apply(highlight_cv, axis=1)
+    styled_owner_df = (
+        owner_points_df
+        .style
+        .format({"Points": "{:.1f}"})
+        .apply(highlight_cv, axis=1)
+    )
 
     st.dataframe(
         styled_owner_df,
         use_container_width=True,
         hide_index=True
     )
+
 
 # --------------------------------------------------
 # FOOTER
