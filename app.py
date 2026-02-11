@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import re
 import plotly.express as px
+import numpy as np
 
 from config.captains import CAPTAIN_CONFIG
 
@@ -374,6 +375,31 @@ with tab1:
     team_df["Movement"] = team_df["Owner"].map(overtake_scores)
     team_df["Movement"] = team_df["Movement"].apply(overtake_label)
 
+    # --------------------------------------------------
+    # RANK DELTA COLUMNS (Next Rank & 1st Rank)
+    # --------------------------------------------------
+    scores = team_df["Total Points"].values
+
+    def format_delta(val):
+        if pd.isna(val):
+            return np.nan
+        return round(val, 1)
+
+    # Next Rank Delta
+    next_rank_delta = [np.nan]
+    for i in range(1, len(scores)):
+        next_rank_delta.append(format_delta(scores[i - 1] - scores[i]))
+
+    # 1st Rank Delta
+    first_rank_delta = [
+        np.nan if i == 0 else format_delta(scores[0] - s)
+        for i, s in enumerate(scores)
+    ]
+
+    team_df["Next Rank Δ"] = next_rank_delta
+    team_df["1st Rank Δ"] = first_rank_delta
+
+
 
     def highlight_top3(row):
         if row["Rank"] == 1:
@@ -386,18 +412,33 @@ with tab1:
             style = ""
 
         # Apply style only to first 3 columns
-        return [style, style, style, style, ""]
+        return [style, style, style, style, "","",""]
 
     styled_team_df = (
-        team_df[["Rank", "Owner", "Total Points", "Movement","Watchlist"]]
+        team_df[
+            [
+                "Rank",
+                "Owner",
+                "Total Points",
+                "Movement",
+                "Next Rank Δ",
+                "1st Rank Δ",
+                "Watchlist",
+            ]
+        ]
         .style
-        .format({"Total Points": "{:.1f}"})
+        .format({
+            "Total Points": "{:.1f}",
+            "Next Rank Δ": "{:.1f}",
+            "1st Rank Δ": "{:.1f}",
+        })
         .apply(highlight_top3, axis=1)
         .set_properties(**{"text-align": "center"})
         .set_table_styles(
             [{"selector": "th", "props": [("text-align", "center")]}]
         )
     )
+
 
     st.dataframe(
         styled_team_df,
