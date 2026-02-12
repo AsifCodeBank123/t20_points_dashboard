@@ -6,6 +6,7 @@ import plotly.express as px
 import numpy as np
 
 from config.captains import CAPTAIN_CONFIG
+from config.t20_rankings import T20_RANKINGS
 
 
 # --------------------------------------------------
@@ -117,7 +118,7 @@ for owner, group in df.groupby("owner_name"):
 
 
 
-tab1, tab2 = st.tabs(["🏆 Dashboard", "👥 Player Breakdown"])
+tab1, tab2, tab3 = st.tabs(["🏆 Dashboard", "👥 Player Breakdown", "🧠 Replacement Finder"])
 
 
 def get_team_points_for_day(day: int) -> pd.DataFrame:
@@ -660,6 +661,158 @@ with tab2:
         use_container_width=True,
         hide_index=True
     )
+
+with tab3:
+    st.markdown("## 🔁 Replacement Finder")
+
+    # ----------------------------
+    # OWNER SELECTION
+    # ----------------------------
+    owner_list = sorted(df["owner_name"].unique())
+
+    selected_owner = st.selectbox(
+        "Select Owner",
+        owner_list,
+        key="replacement_owner"
+    )
+
+    owner_players_df = df[df["owner_name"] == selected_owner]
+
+    # ----------------------------
+    # RULED OUT PLAYER SELECTION
+    # ----------------------------
+    ruled_out_player = st.selectbox(
+        "Select Ruled-Out Player",
+        owner_players_df["player_name"].unique(),
+        key="ruled_out_player"
+    )
+
+    r = owner_players_df[
+        owner_players_df["player_name"] == ruled_out_player
+    ].iloc[0]
+
+    r_price = r["bid_price"]
+    r_country = r["country"]
+
+    # Get Dream XI points
+    r_points = scored_df.loc[
+        (scored_df["owner_name"] == selected_owner) &
+        (scored_df["player_name"] == ruled_out_player),
+        "player_points"
+    ].sum()
+
+    st.markdown(
+        f"""
+        **Ruled Out Player Details**
+
+        • Price: ${r_price}  
+        • Country: {r_country}  
+        • Dream XI Points: {round(r_points,1)}
+        """
+    )
+
+    # ----------------------------
+    # RULE 1 — ELIGIBILITY CHECK
+    # ----------------------------
+    if r_price < 500:
+        st.error("Replacement NOT allowed. Auction price must be ≥ $500.")
+        st.stop()
+
+    # ----------------------------
+    # CHECK SPECIAL CASE
+    # ----------------------------
+    same_country_count = owner_players_df[
+        owner_players_df["country"] == r_country
+    ].shape[0]
+
+    only_player_case = same_country_count == 1
+
+    # ----------------------------
+    # PREPARE CANDIDATE POOL
+    # ----------------------------
+    candidate_df = df[
+        ~df["player_name"].isin(owner_players_df["player_name"])
+    ].copy()
+
+    # Add points column
+    total_points_df = (
+        scored_df.groupby("player_name")["player_points"]
+        .sum()
+        .reset_index()
+    )
+
+    candidate_df = candidate_df.merge(
+        total_points_df,
+        on="player_name",
+        how="left"
+    )
+
+    candidate_df["player_points"] = candidate_df["player_points"].fillna(0)
+
+    # ----------------------------
+    # APPLY RULES
+    # ----------------------------
+    if not only_player_case:
+
+        st.info("Normal Replacement Rules Applied")
+
+        # Rule: Price constraint
+        candidate_df = candidate_df[
+            candidate_df["bid_price"] <= r_price + 50
+        ]
+
+        # Rule: Points constraint
+        candidate_df = candidate_df[
+            (candidate_df["player_points"] >= r_points) &
+            (candidate_df["player_points"] <= r_points + 50)
+        ]
+
+    else:
+        st.warning("Special Case: Only player from that country in squad")
+
+        # Rule: price lower bound = 50%
+        lower_price = round((r_price * 0.5) / 10) * 10
+
+        # Apply price band
+        candidate_df = candidate_df[
+            (candidate_df["bid_price"] >= lower_price) &
+            (candidate_df["bid_price"] <= r_price)
+        ]
+
+        # Country ranking rule
+        r_rank = T20_RANKINGS.get(r_country, 999)
+
+        candidate_df = candidate_df[
+            candidate_df["country"].apply(
+                lambda c: T20_RANKINGS.get(c, 999) >= r_rank
+            )
+        ]
+
+    # ----------------------------
+    # FINAL DISPLAY TABLE
+    # ----------------------------
+    candidate_df = candidate_df.rename(columns={
+        "player_name": "Player",
+        "country": "Country",
+        "bid_price": "Price",
+        "player_points": "Dream XI Points"
+    })
+
+    candidate_df["Dream XI Points"] = candidate_df["Dream XI Points"].round(1)
+
+    display_cols = ["Player", "Country", "Price", "Dream XI Points"]
+
+    st.markdown("### ✅ Eligible Replacement Players")
+
+    if candidate_df.empty:
+        st.warning("No valid replacements found under current rules.")
+    else:
+        st.dataframe(
+            candidate_df[display_cols]
+            .sort_values("Price"),
+            use_container_width=True,
+            hide_index=True
+        )
 
 
 # --------------------------------------------------
