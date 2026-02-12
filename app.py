@@ -665,9 +665,9 @@ with tab2:
 with tab3:
     st.markdown("## 🔁 Replacement Finder")
 
-    # ----------------------------
+    # ==================================================
     # OWNER SELECTION
-    # ----------------------------
+    # ==================================================
     owner_list = sorted(df["owner_name"].unique())
 
     selected_owner = st.selectbox(
@@ -678,9 +678,9 @@ with tab3:
 
     owner_players_df = df[df["owner_name"] == selected_owner]
 
-    # ----------------------------
+    # ==================================================
     # RULED OUT PLAYER SELECTION
-    # ----------------------------
+    # ==================================================
     ruled_out_player = st.selectbox(
         "Select Ruled-Out Player",
         owner_players_df["player_name"].unique(),
@@ -694,7 +694,7 @@ with tab3:
     r_price = r["bid_price"]
     r_country = r["country"]
 
-    # Get Dream XI points
+    # Dream XI cumulative points
     r_points = scored_df.loc[
         (scored_df["owner_name"] == selected_owner) &
         (scored_df["player_name"] == ruled_out_player),
@@ -703,38 +703,71 @@ with tab3:
 
     st.markdown(
         f"""
-        **Ruled Out Player Details**
+        ### 🧾 Ruled Out Player Details
 
-        • Price: ${r_price}  
-        • Country: {r_country}  
-        • Dream XI Points: {round(r_points,1)}
+        • **Price:** ${r_price}  
+        • **Country:** {r_country}  
+        • **Dream XI Points:** {round(r_points, 1)}
         """
     )
 
-    # ----------------------------
+    # ==================================================
     # RULE 1 — ELIGIBILITY CHECK
-    # ----------------------------
+    # ==================================================
     if r_price < 500:
         st.error("Replacement NOT allowed. Auction price must be ≥ $500.")
         st.stop()
 
-    # ----------------------------
+    # ==================================================
     # CHECK SPECIAL CASE
-    # ----------------------------
+    # ==================================================
     same_country_count = owner_players_df[
         owner_players_df["country"] == r_country
     ].shape[0]
 
     only_player_case = same_country_count == 1
 
-    # ----------------------------
+    # ==================================================
+    # SHOW RULES (CLEAR EXPLANATION)
+    # ==================================================
+    if not only_player_case:
+
+        st.info(
+            """
+            ### 📜 Normal Replacement Rules
+
+            1. Replacement price must be **at least $50 higher** than ruled-out player.
+            2. Replacement Dream XI points must be:
+               - ≥ ruled-out player points  
+               - ≤ ruled-out player points + 50
+            """
+        )
+
+    else:
+
+        st.warning(
+            """
+            ### ⚠ Special Case Rules (Only Player From That Country)
+
+            1. Replacement price must be between:
+               - 50% of ruled-out price (rounded to nearest 10)
+               - Up to ruled-out price
+            2. Dream XI points rule is removed.
+            3. Replacement must be from:
+               - Same country OR
+               - Any country ranked lower in T20 rankings.
+               (Higher-ranked teams are NOT allowed.)
+            """
+        )
+
+    # ==================================================
     # PREPARE CANDIDATE POOL
-    # ----------------------------
+    # ==================================================
     candidate_df = df[
         ~df["player_name"].isin(owner_players_df["player_name"])
     ].copy()
 
-    # Add points column
+    # Add cumulative Dream XI points
     total_points_df = (
         scored_df.groupby("player_name")["player_points"]
         .sum()
@@ -749,48 +782,55 @@ with tab3:
 
     candidate_df["player_points"] = candidate_df["player_points"].fillna(0)
 
-    # ----------------------------
+    # ==================================================
     # APPLY RULES
-    # ----------------------------
+    # ==================================================
     if not only_player_case:
 
-        st.info("Normal Replacement Rules Applied")
+        # ----------------------------
+        # NORMAL CASE
+        # ----------------------------
 
-        # Rule: Price constraint
+        # Rule 3: Price must be ≥ ruled price + 50
         candidate_df = candidate_df[
-            candidate_df["bid_price"] <= r_price + 50
+            candidate_df["bid_price"] >= r_price + 50
         ]
 
-        # Rule: Points constraint
+        # Rule 4: Points band restriction
         candidate_df = candidate_df[
             (candidate_df["player_points"] >= r_points) &
             (candidate_df["player_points"] <= r_points + 50)
         ]
 
     else:
-        st.warning("Special Case: Only player from that country in squad")
 
-        # Rule: price lower bound = 50%
+        # ----------------------------
+        # SPECIAL CASE
+        # ----------------------------
+
+        # Price lower bound = 50%, rounded to nearest 10
         lower_price = round((r_price * 0.5) / 10) * 10
 
-        # Apply price band
         candidate_df = candidate_df[
             (candidate_df["bid_price"] >= lower_price) &
             (candidate_df["bid_price"] <= r_price)
         ]
 
-        # Country ranking rule
-        r_rank = T20_RANKINGS.get(r_country, 999)
+        # Strict ranking enforcement
+        r_rank = T20_RANKINGS.get(r_country)
 
         candidate_df = candidate_df[
             candidate_df["country"].apply(
-                lambda c: T20_RANKINGS.get(c, 999) >= r_rank
+                lambda c: (
+                    c in T20_RANKINGS and
+                    T20_RANKINGS[c] >= r_rank
+                )
             )
         ]
 
-    # ----------------------------
-    # FINAL DISPLAY TABLE
-    # ----------------------------
+    # ==================================================
+    # FINAL DISPLAY
+    # ==================================================
     candidate_df = candidate_df.rename(columns={
         "player_name": "Player",
         "country": "Country",
