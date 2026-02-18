@@ -7,18 +7,18 @@ Asif,Dushmantha Chameera,Srilanka,420,Pacer,0,0,0,0,0,50,0,0,0,0,0,0,0,0,0,0,0,8
 Asif,Harry Tector,Ireland,50,Batter,0,0,0,0,0,54,0,0,0,0,0,0,0,0,35,0,0,0,0,0,0,0,0,38,0,0,0,0,0,0,0,0,0,0,0,0
 Asif,Lungi Ngidi,South Africa,650,Pacer,0,0,0,0,0,0,0,0,146,0,0,0,0,0,129,0,0,0,0,0,0,0,0,42,0,0,0,0,0,0,0,0,0,0,0,0
 Asif,Johnson Charles,West Indies,260,Batter,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Asif,Louren Steenkamp,Namibia,200,Batter,0,0,0,0,0,0,0,0,0,0,0,14,0,0,0,0,0,65,0,0,0,0,0,0,0,0,110,0,0,0,0,0,0,0,0,0
+Asif,Louren Steenkamp,Namibia,200,Batter,0,0,0,0,0,0,0,0,0,0,0,14,0,0,0,0,0,65,0,0,0,0,0,0,0,0,110,0,0,0,0,0,0,0,0,45
 Asif,Matthew Renshaw,Australia,200,Batter,0,0,0,0,0,0,0,0,0,0,0,0,0,0,53,0,0,0,0,0,105,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 Asif,Milind Kumar,USA,50,All-rounder,0,0,88,0,0,0,0,0,0,0,0,64,0,0,0,0,0,0,0,0,23,0,0,0,0,0,53,0,0,0,0,0,0,0,0,0
 Asif,Naseem Shah,Pakistan,200,Pacer,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 Asif,Quinton de Kock,South Africa,1450,Wicket-keeper/Batter,0,1,0,0,1,0,0,1,57,0,1,0,0,1,117,0,0,0,0,0,0,0,1,52,0,0,0,0,0,0,0,0,0,0,0,0
-Asif,Saim Ayub,Pakistan,1350,Batter,0,0,118,0,0,0,0,0,0,0,0,42,0,0,0,0,0,0,0,0,0,0,0,0,0,0,155,0,0,0,0,0,0,0,0,0
+Asif,Saim Ayub,Pakistan,1350,Batter,0,0,118,0,0,0,0,0,0,0,0,42,0,0,0,0,0,0,0,0,0,0,0,0,0,0,155,0,0,0,0,0,0,0,0,52
 Asif,Tom Banton,England,800,Wicket-keeper/Batter,0,0,0,0,0,14,0,0,0,0,0,0,0,0,22,0,0,0,0,0,0,0,0,129,0,0,0,0,0,86,0,0,0,0,0,0
 Asif,Wellington Masakadza,Zimbabwe,210,Spinner,0,0,0,0,0,0,0,0,11,0,0,0,0,0,0,0,0,0,0,0,40,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 Johnson,Anrich Nortje,South Africa,1300,Pacer,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 Johnson,Brian Bennett,Zimbabwe,270,All-rounder,0,0,0,0,0,0,0,0,100,0,0,0,0,0,0,0,0,0,0,0,104,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 Johnson,Fakhar Zaman,Pakistan,610,Batter,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Johnson,Gerhard Erasmus,Namibia,50,All-rounder,0,0,0,0,0,0,0,0,0,0,0,53,0,0,0,0,0,207,0,0,0,0,0,0,0,0,73,0,0,0,0,0,0,0,0,0
+Johnson,Gerhard Erasmus,Namibia,50,All-rounder,0,0,0,0,0,0,0,0,0,0,0,53,0,0,0,0,0,207,0,0,0,0,0,0,0,0,73,0,0,0,0,0,0,0,0,69
 Johnson,Harry Brook,England,790,Batter,0,0,0,0,0,103,0,0,0,0,0,0,0,0,25,0,0,0,0,0,0,0,0,14,0,0,0,0,0,36,0,0,0,0,0,0
 Johnson,Kuldeep Yadav,India,200,Spinner,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,48,0,0,0,0,0,0,0,0,0
 Johnson,Kusal Janith Perera,Srilanka,320,Batter,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13,0,0,0,0,0,0
@@ -33,7 +33,7 @@ Johnson,Richie Berrington,Scotland,50,All-rounder,0,0,80,0,0,0,0,0,45,0,0,0,0,0,
 Johnson,Rovman Powell,West Indies,430,All-rounder,0,0,58,0,0,0,0,0,0,0,0,0,0,0,42,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0
 Johnson,Wanindu Hasaranga,Srilanka,610,All-rounder,0,0,0,0,0,116,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 Johnson,Sam Curran,England,610,All-rounder,0,0,0,0,0,0,0,0,0,0,0,0,0,0,118,0,0,0,0,0,0,0,0,107,0,0,0,0,0,149,0,0,0,0,0,0
-Lalit,Babar Azam,Pakistan,350,Batter,0,0,31,0,0,0,0,0,0,0,0,78,0,0,0,0,0,0,0,0,0,0,0,0,0,0,17,0,0,0,0,0,0,0,0,0
+Lalit,Babar Azam,Pakistan,350,Batter,0,0,31,0,0,0,0,0,0,0,0,78,0,0,0,0,0,0,0,0,0,0,0,0,0,0,17,0,0,0,0,0,0,0,0,4
 Lalit,Bas de Leede,Netherlands,110,All-rounder,0,0,56,0,0,0,0,0,0,0,0,217,0,0,0,0,0,0,0,0,139,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 Lalit,Corbin Bosch,South Africa,220,Pacer,0,0,0,0,0,0,0,0,52,0,0,0,0,0,0,0,0,0,0,0,0,0,0,42,0,0,0,0,0,0,0,0,0,0,0,0
 Lalit,David Miller,South Africa,410,Batter,0,0,0,0,0,0,0,0,73,0,0,0,0,0,44,0,0,0,0,0,0,0,0,48,0,0,0,0,0,0,0,0,0,0,0,0
@@ -46,7 +46,7 @@ Lalit,Quentin Sampson,West Indies,100,All-rounder,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 Lalit,Rashid Khan,Afghanistan,1100,Spinner,0,1,0,0,1,55,0,1,0,0,1,0,0,1,115,0,1,0,0,0,0,0,0,0,0,0,0,0,1,55,0,0,0,0,0,0
 Lalit,Rinku Singh,India,400,Batter,0,0,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,44,0,0,0,0,0,0,0,0,0
 Lalit,Ryan Burl,Zimbabwe,100,All-rounder,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,106,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Lalit,Sahibzada Farhan,Pakistan,100,Wicket-keeper/Batter,0,0,103,0,0,0,0,0,0,0,0,145,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0
+Lalit,Sahibzada Farhan,Pakistan,100,Wicket-keeper/Batter,0,0,103,0,0,0,0,0,0,0,0,145,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,194
 Lalit,Sam Curran,England,610,All-rounder,0,0,0,0,0,46,0,0,0,0,0,0,0,0,118,0,0,0,0,0,0,0,0,107,0,0,0,0,0,149,0,0,0,0,0,0
 Lalit,Shaheen Shah Afridi,Pakistan,520,Pacer,0,0,55,0,0,0,0,0,0,0,0,79,0,0,0,0,0,0,0,0,0,0,0,0,0,0,76,0,0,0,0,0,0,0,0,0
 Lalit,Suryakumar Yadav,India,3050,Batter,1,0,170,1,0,0,1,0,0,1,0,0,1,0,0,1,0,22,0,0,0,0,0,0,1,0,52,0,0,0,0,0,0,0,0,0
@@ -60,7 +60,7 @@ Sanskar,Jamie Overton,England,710,All-rounder,0,0,0,0,0,0,0,0,0,0,0,0,0,0,89,0,0
 Sanskar,Kusal Mendis,Srilanka,720,Batter,0,0,0,0,0,102,0,0,0,0,0,0,0,0,0,0,0,129,0,0,0,0,0,0,0,0,0,0,0,125,0,0,0,0,0,0
 Sanskar,Matthew Cross,Scotland,200,Wicket-keeper/Batter,0,0,19,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,24,0,0,0,0,0,0,0,0,12,0,0,0
 Sanskar,Michael Bracewell,New Zealand,200,All-rounder,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Sanskar,Mohammad Salman Mirza,Pakistan,100,Pacer,0,0,114,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Sanskar,Mohammad Salman Mirza,Pakistan,100,Pacer,0,0,114,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,54
 Sanskar,Monank Patel,USA,310,Wicket-keeper/Batter,0,0,10,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,74,0,0,0,0,0,100,0,0,0,0,0,0,0,0,0
 Sanskar,Noor Ahmad,Afghanistan,400,Spinner,0,0,0,0,0,0,0,0,0,0,0,0,0,0,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0
 Sanskar,Romario Shepherd,West Indies,400,All-rounder,0,0,211,0,0,0,0,0,0,0,0,0,0,0,38,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -79,7 +79,7 @@ Willy & Umesh,Jos Buttler,England,1800,Wicket-keeper/Batter,1,0,0,1,0,66,1,0,0,1
 Willy & Umesh,Josh Little,Ireland,50,Pacer,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,125,0,0,0,0,0,0,0,0,0,0,0,0
 Willy & Umesh,Lockie Ferguson,New Zealand,210,Pacer,0,0,0,0,0,82,0,0,0,0,0,42,0,0,0,0,0,0,0,0,0,0,0,47,0,0,0,0,0,0,0,0,0,0,0,0
 Willy & Umesh,Saurabh Netravalkar,USA,120,Pacer,0,0,6,0,0,0,0,0,0,0,0,66,0,0,0,0,0,0,0,0,0,0,0,0,0,0,41,0,0,0,0,0,0,0,0,0
-Willy & Umesh,Shadab Khan,Pakistan,390,All-rounder,0,0,18,0,0,0,0,0,0,0,0,142,0,0,0,0,0,0,0,0,0,0,0,0,0,0,22,0,0,0,0,0,0,0,0,0
+Willy & Umesh,Shadab Khan,Pakistan,390,All-rounder,0,0,18,0,0,0,0,0,0,0,0,142,0,0,0,0,0,0,0,0,0,0,0,0,0,0,22,0,0,0,0,0,0,0,0,189
 Willy & Umesh,Sherfane Rutherford,West Indies,100,Batter,0,0,78,0,0,0,0,0,0,0,0,0,0,0,156,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0
 Willy & Umesh,Shivam Dube,India,400,All-rounder,0,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,90,0,0,0,0,0,0,0,0,73,0,0,0,0,0,0,0,0,0
 Willy & Umesh,Tim David,Australia,450,Batter,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,14,0,0,0,0,0,0
@@ -89,13 +89,13 @@ Somansh,Cooper Connolly,Australia,200,All-rounder,0,0,0,0,0,0,0,0,0,0,0,0,0,0,41
 Somansh,Dion Myers,Zimbabwe,180,Batter,0,0,0,0,0,0,0,0,18,0,0,0,0,0,0,0,0,0,0,0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 Somansh,James Neesham,New Zealand,210,All-rounder,0,0,0,0,0,11,0,0,0,0,0,14,0,0,0,0,0,0,0,0,0,0,0,76,0,0,0,0,0,0,0,0,51,0,0,0
 Somansh,Jayden Seales,West Indies,180,Pacer,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Somansh,JJ Smit,Namibia,70,All-rounder,0,0,0,0,0,0,0,0,0,0,0,51,0,0,0,0,0,40,0,0,0,0,0,0,0,0,76,0,0,0,0,0,0,0,0,0
+Somansh,JJ Smit,Namibia,70,All-rounder,0,0,0,0,0,0,0,0,0,0,0,51,0,0,0,0,0,40,0,0,0,0,0,0,0,0,76,0,0,0,0,0,0,0,0,17
 Somansh,Richard Nagrava,Zimbabwe,510,Pacer,0,0,0,0,0,0,0,0,132,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 Somansh,Kagiso Rabada,South Africa,510,Pacer,0,0,0,0,0,0,0,0,65,0,0,0,0,0,46,0,0,0,0,0,0,0,0,16,0,0,0,0,0,0,0,0,0,0,0,0
 Somansh,Keshav Maharaj,South Africa,480,Spinner,0,0,0,0,0,0,0,0,12,0,0,0,0,0,49,0,0,0,0,0,0,0,0,48,0,0,0,0,0,0,0,0,0,0,0,0
 Somansh,Kyle Jamieson,New Zealand,260,Pacer,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,39,0,0,0
 Somansh,Max O'Dowd,Netherlands,50,Batter,0,0,13,0,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,21,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Somansh,Mohammad Nawaz,Pakistan,560,All-rounder,0,0,78,0,0,0,0,0,0,0,0,52,0,0,0,0,0,0,0,0,0,0,0,0,0,0,28,0,0,0,0,0,0,0,0,0
+Somansh,Mohammad Nawaz,Pakistan,560,All-rounder,0,0,78,0,0,0,0,0,0,0,0,52,0,0,0,0,0,0,0,0,0,0,0,0,0,0,28,0,0,0,0,0,0,0,0,51
 Somansh,Pathum Nissanka,Srilanka,790,Batter,0,0,0,0,0,38,0,0,0,0,0,0,0,0,0,0,0,33,0,0,0,0,0,0,0,0,0,0,0,204,0,0,0,0,0,0
 Somansh,Rahmanullah Gurbaz,Afghanistan,650,Wicket-keeper/Batter,0,0,0,0,0,49,0,0,0,0,0,0,0,0,164,0,0,0,0,0,0,0,0,0,0,0,0,0,0,36,0,0,0,0,0,0
 Somansh,Roelof van der Merwe,Netherlands,220,All-rounder,0,0,65,0,0,0,0,0,0,0,0,13,0,0,0,0,0,0,0,0,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -116,7 +116,7 @@ Pritam,Ryan Rickleton,South Africa,1850,Wicket-keeper/Batter,1,0,0,1,0,0,1,0,63,
 Pritam,Sanju Samson,India,360,Wicket-keeper/Batter,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,48,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 Pritam,Sediqullah Atal,Afghanistan,310,Batter,0,0,0,0,0,45,0,0,0,0,0,0,0,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,30,0,0,0,0,0,0
 Pritam,Shai Hope,West Indies,950,Wicket-keeper/Batter,0,0,31,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,121,0,0,0,0,0,0,0,0,0
-Pritam,Usman Khan,Pakistan,380,Batter,0,0,18,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,88,0,0,0,0,0,0,0,0,0
+Pritam,Usman Khan,Pakistan,380,Batter,0,0,18,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,88,0,0,0,0,0,0,0,0,44
 Pritam,Washington Sundar,India,200,All-rounder,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 Rachita & Pritesh,Abrar Ahmed,Pakistan,550,Spinner,0,0,84,0,0,0,0,0,0,0,0,51,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0
 Rachita & Pritesh,Axar Patel,India,740,All-rounder,0,0,98,0,0,0,0,0,0,0,0,0,0,0,0,0,0,103,0,0,0,0,0,0,0,0,83,0,0,0,0,0,0,0,0,0
@@ -130,7 +130,7 @@ Rachita & Pritesh,Maheesh Theekshana,Srilanka,320,Spinner,0,0,0,0,0,120,0,0,0,0,
 Rachita & Pritesh,Matt Henry,New Zealand,320,Pacer,0,0,0,0,0,47,0,0,0,0,0,74,0,0,0,0,0,0,0,0,0,0,0,25,0,0,0,0,0,0,0,0,47,0,0,0
 Rachita & Pritesh,Mujeeb Ur Rahman,Afghanistan,350,Spinner,0,0,0,0,0,91,0,0,0,0,0,0,0,0,17,0,0,0,0,0,0,0,0,0,0,0,0,0,0,92,0,0,0,0,0,0
 Rachita & Pritesh,Nathan Ellis,Australia,480,Pacer,0,0,0,0,0,0,0,0,0,0,0,0,0,0,181,0,0,0,0,0,24,0,0,0,0,0,0,0,0,14,0,0,0,0,0,0
-Rachita & Pritesh,Salman Ali Agha,Pakistan,670,All-rounder,0,0,44,0,0,0,0,0,0,0,0,13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,52,0,0,0,0,0,0,0,0,0
+Rachita & Pritesh,Salman Ali Agha,Pakistan,670,All-rounder,0,0,44,0,0,0,0,0,0,0,0,13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,52,0,0,0,0,0,0,0,0,80
 Rachita & Pritesh,Shayan Jahangir,USA,50,Batter,0,0,0,0,0,0,0,0,0,0,0,113,0,0,0,0,0,0,0,0,42,0,0,0,0,0,56,0,0,0,0,0,0,0,0,0
 Rachita & Pritesh,Shimron Hetmyer,West Indies,440,Batter,0,1,134,0,1,0,0,1,0,0,1,0,0,1,53,0,1,0,0,0,0,0,0,0,0,1,92,0,0,0,0,0,0,0,0,0
 Rachita & Pritesh,Tadiwanashe Marumani,Zimbabwe,100,Batter,0,0,0,0,0,0,0,0,51,0,0,0,0,0,0,0,0,0,0,0,83,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -139,11 +139,11 @@ Mahesh,Aiden Markram,South Africa,2200,Batter,1,0,0,1,0,0,1,0,123,1,0,0,1,0,21,0
 Mahesh,Azmatullah Omarzai,Afghanistan,550,All-rounder,0,0,0,0,0,73,0,0,0,0,0,0,0,0,137,0,0,0,0,0,0,0,0,0,0,0,0,0,0,237,0,0,0,0,0,0
 Mahesh,Curtis Campher,Ireland,50,All-rounder,0,0,0,0,0,21,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,30,0,0,0,0,0,0,0,0,0,0,0,0
 Mahesh,Dunith Wellalage,Srilanka,220,All-rounder,0,0,0,0,0,55,0,0,0,0,0,0,0,0,0,0,0,61,0,0,0,0,0,0,0,0,0,0,0,47,0,0,0,0,0,0
-Mahesh,Faheem Ashraf,Pakistan,200,All-rounder,0,0,69,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,18,0,0,0,0,0,0,0,0,0
+Mahesh,Faheem Ashraf,Pakistan,200,All-rounder,0,0,69,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,18,0,0,0,0,0,0,0,0,9
 Mahesh,George Dockrell,Ireland,50,All-rounder,0,0,0,0,0,116,0,0,0,0,0,0,0,0,120,0,0,0,0,0,0,0,0,105,0,0,0,0,0,0,0,0,0,0,0,0
 Mahesh,Glenn Phillips,New Zealand,600,Batter,0,0,0,0,0,104,0,0,0,0,0,59,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,178,0,0,0
 Mahesh,Gulbadin Naib,Afghanistan,300,All-rounder,0,0,0,0,0,117,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,28,0,0,0,0,0,0
-Mahesh,Jan Frylinck,Namibia,200,All-rounder,0,0,0,0,0,0,0,0,0,0,0,56,0,0,0,0,0,46,0,0,0,0,0,0,0,0,33,0,0,0,0,0,0,0,0,0
+Mahesh,Jan Frylinck,Namibia,200,All-rounder,0,0,0,0,0,0,0,0,0,0,0,56,0,0,0,0,0,46,0,0,0,0,0,0,0,0,33,0,0,0,0,0,0,0,0,17
 Mahesh,Jason Holder,West Indies,500,All-rounder,0,0,115,0,0,0,0,0,0,0,0,0,0,0,89,0,0,0,0,0,0,0,0,0,0,0,145,0,0,0,0,0,0,0,0,0
 Mahesh,Jason Smith,South Africa,200,All-rounder,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 Mahesh,Kamindu Mendis,Srilanka,600,Batter,0,0,0,0,0,94,0,0,0,0,0,0,0,0,0,0,0,84,0,0,0,0,0,0,0,0,0,0,0,51,0,0,0,0,0,0
