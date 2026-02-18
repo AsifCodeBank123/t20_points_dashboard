@@ -20,7 +20,7 @@ CAPTAIN_CONFIG = {
     },
     "Willy & Umesh": {
         "C": "Jos Buttler",
-        "VC": "Jasprit Bumrahi"
+        "VC": "Jasprit Bumrah"
     },
     "Somansh": {
         "C": "Varun Chakaravarthy",
