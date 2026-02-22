@@ -633,31 +633,52 @@ with tab2:
         .sort_values("player_points", ascending=False)
     )
 
-    # Helper: compute match-wise gains (NO ZERO)
+    # Helper: compute match-wise gains using GROUP / SUPER logic
+    GROUP_STAGE_END = 14
+
     def get_player_daywise_gains(player_name):
+
         player_rows = df[
             (df["owner_name"] == selected_owner) &
             (df["player_name"] == player_name)
         ]
 
+        if player_rows.empty:
+            return "—"
+
+        row = player_rows.iloc[0]
+
         gains = []
 
         for d in range(1, selected_day + 1):
-            day_col = f"day{d}"
-            c_col = f"c_day{d}"
-            vc_col = f"vc_day{d}"
 
-            if day_col not in player_rows:
+            day_col = f"day{d}"
+
+            if day_col not in df.columns:
                 continue
 
-            points = pd.to_numeric(player_rows.iloc[0][day_col], errors="coerce")
+            # raw points
+            points = pd.to_numeric(row.get(day_col, 0), errors="coerce")
             points = 0 if pd.isna(points) else points
 
+            # determine multiplier based on stage
             multiplier = 1.0
-            if c_col in player_rows and player_rows.iloc[0][c_col] == 1:
-                multiplier = 2.0
-            elif vc_col in player_rows and player_rows.iloc[0][vc_col] == 1:
-                multiplier = 1.5
+
+            if d <= GROUP_STAGE_END:
+
+                if row.get("c_grp", 0) == 1:
+                    multiplier = 2.0
+
+                elif row.get("vc_grp", 0) == 1:
+                    multiplier = 1.5
+
+            else:
+
+                if row.get("c_super", 0) == 1:
+                    multiplier = 2.0
+
+                elif row.get("vc_super", 0) == 1:
+                    multiplier = 1.5
 
             value = round(points * multiplier, 1)
 
@@ -675,11 +696,36 @@ with tab2:
     captain = CAPTAIN_CONFIG.get(selected_owner, {}).get("C")
     vice_captain = CAPTAIN_CONFIG.get(selected_owner, {}).get("VC")
 
+    # GROUP_STAGE_END = 14
+
     def cv_label(player):
-        if player == captain:
-            return "🧢 Captain"
-        if player == vice_captain:
-            return "🎖️ Vice Captain"
+
+        player_row = df[
+            (df["owner_name"] == selected_owner) &
+            (df["player_name"] == player)
+        ]
+
+        if player_row.empty:
+            return ""
+
+        row = player_row.iloc[0]
+
+        if selected_day <= GROUP_STAGE_END:
+
+            if row.get("c_grp", 0) == 1:
+                return "🧢 Captain"
+
+            elif row.get("vc_grp", 0) == 1:
+                return "🎖️ Vice Captain"
+
+        else:
+
+            if row.get("c_super", 0) == 1:
+                return "🧢 Captain"
+
+            elif row.get("vc_super", 0) == 1:
+                return "🎖️ Vice Captain"
+
         return ""
 
     owner_points_df["C / VC"] = owner_points_df["player_name"].apply(cv_label)
