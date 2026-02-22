@@ -104,22 +104,29 @@ if not day_row.empty:
 
 
 # --------------------------------------------------
-# BUILD WATCHLIST PER OWNER (BASED ON MATCHES)
+# BUILD WATCHLIST PER OWNER (EXCLUDE RELEASED / INJURED)
 # --------------------------------------------------
+
 owner_watch_map = {}
 
 for owner, group in df.groupby("owner_name"):
+
+    eligible_players = group[
+        (group["country"].isin(playing_countries)) &
+        (group["released_injured"].fillna("").str.upper() != "Y")
+    ]
+
     watch_players = (
-        group[group["country"].isin(playing_countries)]
-        ["player_name"]
+        eligible_players["player_name"]
+        .dropna()
         .unique()
         .tolist()
     )
 
-    if watch_players:
-        owner_watch_map[owner] = ", ".join(sorted(watch_players))
-    else:
-        owner_watch_map[owner] = "—"
+    owner_watch_map[owner] = (
+        ", ".join(sorted(watch_players))
+        if watch_players else "—"
+    )
 
 
 
