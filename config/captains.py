@@ -3,32 +3,32 @@
 CAPTAIN_CONFIG = {
     # owner_name: {"C": "player_name", "VC": "player_name"}
     "Asif": {
-        "C": "Abhishek Sharma",
-        "VC": "Quinton de Kock"
+        "C": "Quinton de Kock",
+        "VC": "Abhishek Sharma"
     },
     "Johnson": {
-        "C": "Mitchell Marsh",
-        "VC": "Rachin Ravindra"
+        "C": "Rachin Ravindra",
+        "VC": "Marco Jansen"
     },
     "Lalit": {
         "C": "Suryakumar Yadav",
-        "VC": "Rashid Khan"
+        "VC": "Sahibzada Farhan"
     },
     "Sanskar": {
         "C": "Hardik Pandya",
-        "VC": "Cameron Green"
+        "VC": "Kusal Mendis"
     },
     "Willy & Umesh": {
-        "C": "Jos Buttler",
-        "VC": "Jasprit Bumrah"
+        "C": "Jasprit Bumrah",
+        "VC": "Jos Buttler"
     },
     "Somansh": {
         "C": "Varun Chakaravarthy",
-        "VC": "Tilak Varma"
+        "VC": "Pathum Nissanka"
     },
     "Pritam": {
         "C": "Ryan Rickleton",
-        "VC": "Mitchell Santner"
+        "VC": "Finn Allen"
     },
     "Rachita & Pritesh": {
         "C": "Ishan Kishan",
@@ -36,7 +36,7 @@ CAPTAIN_CONFIG = {
     },
     "Mahesh": {
         "C": "Aiden Markram",
-        "VC": "Phil Salt"
+        "VC": "Jason Holder"
     },
     # add more owners here
 }

@@ -7,6 +7,11 @@ import numpy as np
 
 from config.captains import CAPTAIN_CONFIG
 from config.t20_rankings import T20_RANKINGS
+from config.auction_config import (
+    INITIAL_PURSE,
+    MINI_AUCTION_MIN_PRICE,
+    PURSE_TO_POINTS_RATIO
+)
 
 
 # --------------------------------------------------
@@ -29,9 +34,9 @@ if os.path.exists(CSS_PATH):
 # --------------------------------------------------
 # LOAD DATA
 # --------------------------------------------------
-DATA_PATH = "data/points_new.csv"
+DATA_PATH = "data/points.csv"
 if not os.path.exists(DATA_PATH):
-    st.error("CSV not found at data/points_new.csv")
+    st.error("CSV not found at data/points.csv")
     st.stop()
 
 df = pd.read_csv(DATA_PATH)
@@ -121,8 +126,13 @@ for owner, group in df.groupby("owner_name"):
 tab1, tab2, tab3 = st.tabs(["🏆 Dashboard", "👥 Player Breakdown", "🧠 Replacement Finder"])
 
 
+# --------------------------------------------------
+# TEAM POINTS FOR A GIVEN DAY
+# --------------------------------------------------
 def get_team_points_for_day(day: int) -> pd.DataFrame:
+
     temp = calculate_points(day)
+
     return (
         temp
         .groupby("owner_name")["player_points"]
@@ -134,31 +144,52 @@ def get_team_points_for_day(day: int) -> pd.DataFrame:
         })
     )
 
+
 # --------------------------------------------------
-# POINT CALCULATION
+# POINT CALCULATION (FIXED FOR c_grp / c_super)
 # --------------------------------------------------
 def calculate_points(upto_day: int) -> pd.DataFrame:
+
     temp = df.copy()
+
+    # Ensure captain columns are numeric (important fix)
+    for col in ["c_grp", "vc_grp", "c_super", "vc_super"]:
+        if col in temp.columns:
+            temp[col] = pd.to_numeric(temp[col], errors="coerce").fillna(0)
+        else:
+            temp[col] = 0
+
     temp["player_points"] = 0.0
 
     for d in range(1, upto_day + 1):
+
         day_col = f"day{d}"
-        c_col = f"c_day{d}"
-        vc_col = f"vc_day{d}"
 
         if day_col not in temp.columns:
             continue
 
         points = pd.to_numeric(
-            temp[day_col], errors="coerce"
+            temp[day_col],
+            errors="coerce"
         ).fillna(0)
 
+        # -------------------------
+        # SELECT CORRECT PHASE
+        # -------------------------
+        if d <= 14:
+            c_col = "c_grp"
+            vc_col = "vc_grp"
+        else:
+            c_col = "c_super"
+            vc_col = "vc_super"
+
+        # -------------------------
+        # MULTIPLIER CALCULATION
+        # -------------------------
         multiplier = pd.Series(1.0, index=temp.index)
 
-        if c_col in temp.columns:
-            multiplier[temp[c_col] == 1] = 2.0
-        if vc_col in temp.columns:
-            multiplier[temp[vc_col] == 1] = 1.5
+        multiplier.loc[temp[c_col] == 1] = 2.0
+        multiplier.loc[temp[vc_col] == 1] = 1.5
 
         temp["player_points"] += points * multiplier
 
@@ -853,6 +884,189 @@ with tab3:
             use_container_width=True,
             hide_index=True
         )
+
+# with tab4:
+
+#     st.markdown("## 💰 Mini Auction Planner")
+
+#     # ============================
+#     # OWNER SELECTION
+#     # ============================
+#     owner_list = sorted(df["owner_name"].unique())
+
+#     selected_owner = st.selectbox(
+#         "Select Owner",
+#         owner_list,
+#         key="mini_owner"
+#     )
+
+#     owner_df = df[df["owner_name"] == selected_owner]
+
+#     # ============================
+#     # CURRENT PURSE CALCULATION
+#     # ============================
+
+#     spent = owner_df["bid_price"].sum()
+
+#     current_purse = INITIAL_PURSE - spent
+
+#     st.markdown(f"""
+#     ### Current Purse Status
+
+#     Initial Purse: ${INITIAL_PURSE}  
+#     Spent: ${spent}  
+#     Remaining Purse: ${current_purse}
+#     """)
+
+#     # ============================
+#     # RELEASE PLAYER SELECTION
+#     # ============================
+
+#     release_players = st.multiselect(
+#         "Select up to 2 players to release",
+#         owner_df["player_name"].tolist(),
+#         max_selections=2
+#     )
+
+#     released_df = owner_df[
+#         owner_df["player_name"].isin(release_players)
+#     ]
+
+#     # ============================
+#     # PURSE RECOVERY FUNCTION
+#     # ============================
+
+#     def purse_recovery(price):
+
+#         if price <= 200:
+#             return price
+
+#         recovery = price * 0.5
+
+#         recovery = int((recovery + 9) // 10 * 10)
+
+#         return recovery
+
+#     released_df["Recovery"] = released_df["bid_price"].apply(purse_recovery)
+
+#     recovered_total = released_df["Recovery"].sum()
+
+#     revised_purse = current_purse + recovered_total
+
+#     st.markdown(f"""
+#     ### Purse After Release
+
+#     Purse Recovered: ${recovered_total}  
+#     Revised Purse: ${revised_purse}
+#     """)
+
+#     # ============================
+#     # PURSE TO POINTS VALUE
+#     # ============================
+
+#     convertible_points = revised_purse * PURSE_TO_POINTS_RATIO
+
+#     st.markdown(f"""
+#     If unused, purse converts to:
+
+#     **{round(convertible_points,1)} points**
+#     """)
+
+#     # ============================
+#     # RELEASE SUGGESTION ENGINE
+#     # ============================
+
+#     owner_points = (
+#         scored_df[
+#             scored_df["owner_name"] == selected_owner
+#         ]
+#         .groupby("player_name")["player_points"]
+#         .sum()
+#         .reset_index()
+#     )
+
+#     owner_points = owner_points.merge(
+#         owner_df[["player_name", "bid_price"]],
+#         on="player_name"
+#     )
+
+#     owner_points["Value Score"] = (
+#         owner_points["player_points"] /
+#         owner_points["bid_price"]
+#     )
+
+#     suggest_release = owner_points.sort_values(
+#         "Value Score"
+#     ).head(5)
+
+#     st.markdown("### Suggested Players to Release (Worst Value)")
+
+#     st.dataframe(
+#         suggest_release.rename(columns={
+#             "player_name": "Player",
+#             "player_points": "Points",
+#             "bid_price": "Price",
+#             "Value Score": "Points per Dollar"
+#         }),
+#         hide_index=True
+#     )
+
+#     # ============================
+#     # TARGET PLAYER POOL
+#     # ============================
+
+#     released_names = released_df["player_name"].tolist()
+
+#     unsold_pool = df.copy()
+
+#     # Remove players already owned except released
+#     unsold_pool = unsold_pool[
+#         (~unsold_pool["player_name"].isin(owner_df["player_name"]))
+#         |
+#         (unsold_pool["player_name"].isin(released_names))
+#     ]
+
+#     unsold_pool = unsold_pool.merge(
+#         scored_df.groupby("player_name")["player_points"].sum().reset_index(),
+#         on="player_name",
+#         how="left"
+#     )
+
+#     unsold_pool["player_points"] = unsold_pool["player_points"].fillna(0)
+
+#     # Filter affordable targets
+#     affordable_targets = unsold_pool[
+#         unsold_pool["bid_price"] <= revised_purse
+#     ]
+
+#     affordable_targets = affordable_targets[
+#         affordable_targets["bid_price"] >= MINI_AUCTION_MIN_PRICE
+#     ]
+
+#     st.markdown("### Affordable Targets in Mini Auction")
+
+#     st.dataframe(
+#         affordable_targets.rename(columns={
+#             "player_name": "Player",
+#             "country": "Country",
+#             "bid_price": "Expected Price",
+#             "player_points": "Dream XI Points"
+#         }).sort_values("Expected Price"),
+#         hide_index=True,
+#         use_container_width=True
+#     )
+
+#     # ============================
+#     # SUMMARY
+#     # ============================
+
+#     st.markdown(f"""
+#     ### Mini Auction Summary
+
+#     Players Released: {len(release_players)}  
+#     Purse Available: ${revised_purse}  
+#     Max Possible Conversion: {round(convertible_points,1)} points  
+#     """)
 
 
 # --------------------------------------------------
