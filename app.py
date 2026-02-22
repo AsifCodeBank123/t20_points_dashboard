@@ -104,30 +104,51 @@ if not day_row.empty:
 
 
 # --------------------------------------------------
-# BUILD WATCHLIST PER OWNER (EXCLUDE RELEASED / INJURED)
+# BUILD WATCHLIST PER OWNER (WITH CAPTAIN / VC HIGHLIGHT)
 # --------------------------------------------------
+
+GROUP_STAGE_END = 14  # change if needed
 
 owner_watch_map = {}
 
 for owner, group in df.groupby("owner_name"):
 
-    eligible_players = group[
+    # Exclude released/injured players
+    eligible = group[
         (group["country"].isin(playing_countries)) &
         (group["released_injured"].fillna("").str.upper() != "Y")
     ]
 
-    watch_players = (
-        eligible_players["player_name"]
-        .dropna()
-        .unique()
-        .tolist()
-    )
+    watch_players = []
+
+    for _, row in eligible.iterrows():
+
+        player = row["player_name"]
+
+        # Determine captain / VC based on stage
+        if selected_day <= GROUP_STAGE_END:
+
+            is_c = row.get("c_grp", 0) == 1
+            is_vc = row.get("vc_grp", 0) == 1
+
+        else:
+
+            is_c = row.get("c_super", 0) == 1
+            is_vc = row.get("vc_super", 0) == 1
+
+        # Add highlight symbols
+        if is_c:
+            player = f"🧢 {player}"
+
+        elif is_vc:
+            player = f"🎖️ {player}"
+
+        watch_players.append(player)
 
     owner_watch_map[owner] = (
         ", ".join(sorted(watch_players))
         if watch_players else "—"
     )
-
 
 
 tab1, tab2, tab3 = st.tabs(["🏆 Dashboard", "👥 Player Breakdown", "🧠 Replacement Finder"])

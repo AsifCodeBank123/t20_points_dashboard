@@ -1,6 +1,6 @@
 owner_name,player_name,country,bid_price,role,released_injured,c_grp,vc_grp,c_super,vc_super,day1,day2,day3,day4,day5,day6,day7,day8,day9,day10,day11,day12,day13,day14,day15,day16
-Asif,Abhishek Sharma,India,3000,Batter,,1,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,3,0,0,0
-Asif,Akeal Hosein,West Indies,240,Spinner,,0,0,0,1,-1,0,0,0,42,0,0,0,51,0,0,0,41,0,0,0
+Asif,Abhishek Sharma,India,3000,Batter,,1,0,0,1,2,0,0,0,0,0,0,0,2,0,0,0,3,0,0,0
+Asif,Akeal Hosein,West Indies,240,Spinner,,0,0,0,0,-1,0,0,0,42,0,0,0,51,0,0,0,41,0,0,0
 Asif,Andries Gous,USA,520,Batter,Y,0,0,0,0,22,0,0,45,0,0,0,0,0,0,0,0,0,0,0,0
 Asif,Darwish Rasooli,Afghanistan,400,Batter,,0,0,0,0,0,38,0,0,19,0,0,0,0,61,0,0,16,0,0,0
 Asif,Dushmantha Chameera,Srilanka,420,Pacer,,0,0,0,0,0,50,0,0,0,86,0,0,0,73,0,0,0,0,0,0
@@ -81,9 +81,9 @@ Willy & Umesh,Kamil Mishara,Srilanka,100,Batter,,0,0,0,0,0,34,0,0,0,40,0,0,0,0,0
 Willy & Umesh,Glenn Maxwell,Australia,370,All-rounder,,0,0,0,0,0,0,0,0,17,0,50,0,0,41,0,0,0,95,0,0
 Willy & Umesh,Gudakesh Motie,West Indies,100,Spinner,,0,0,0,0,49,0,0,0,120,0,0,0,8,0,0,0,83,0,0,0
 Willy & Umesh,Ibrahim Zadran,Afghanistan,600,Batter,,0,0,0,0,0,18,0,0,34,0,0,0,0,103,0,0,181,0,0,0
-Willy & Umesh,Jasprit Bumrah,India,1600,Pacer,,0,1,0,0,0,0,0,0,0,67,0,0,77,0,0,0,57,0,0,0
+Willy & Umesh,Jasprit Bumrah,India,1600,Pacer,,0,1,1,0,0,0,0,0,0,67,0,0,77,0,0,0,57,0,0,0
 Willy & Umesh,Jofra Archer,England,550,Pacer,,0,0,0,0,0,42,0,0,49,0,0,80,0,79,0,0,0,0,0,0
-Willy & Umesh,Jos Buttler,England,1800,Wicket-keeper/Batter,,1,0,0,0,0,66,0,0,41,0,0,13,0,23,0,0,0,0,0,0
+Willy & Umesh,Jos Buttler,England,1800,Wicket-keeper/Batter,,1,0,0,1,0,66,0,0,41,0,0,13,0,23,0,0,0,0,0,0
 Willy & Umesh,Josh Little,Ireland,50,Pacer,,0,0,0,0,0,0,0,0,0,0,0,125,0,0,0,0,0,0,0,0
 Willy & Umesh,Lockie Ferguson,New Zealand,210,Pacer,,0,0,0,0,0,82,0,42,0,0,0,47,0,0,0,0,0,0,0,0
 Willy & Umesh,Saurabh Netravalkar,USA,120,Pacer,,0,0,0,0,6,0,0,66,0,0,0,0,41,0,0,0,0,0,0,0
@@ -106,11 +106,11 @@ Somansh,Keshav Maharaj,South Africa,480,Spinner,,0,0,0,0,0,0,12,0,49,0,0,48,0,0,
 Somansh,Kyle Jamieson,New Zealand,260,Pacer,,0,0,0,0,0,0,0,0,0,0,0,0,0,0,39,0,0,0,0,0
 Somansh,Max O'Dowd,Netherlands,50,Batter,,0,0,0,0,13,0,0,15,0,0,21,0,0,0,0,0,38,0,0,0
 Somansh,Mohammad Nawaz,Pakistan,560,All-rounder,,0,0,0,0,78,0,0,52,0,0,0,0,28,0,0,51,0,0,0,0
-Somansh,Pathum Nissanka,Srilanka,790,Batter,,0,0,0,0,0,38,0,0,0,33,0,0,0,204,0,0,110,0,0,0
+Somansh,Pathum Nissanka,Srilanka,790,Batter,,0,0,0,1,0,38,0,0,0,33,0,0,0,204,0,0,110,0,0,0
 Somansh,Rahmanullah Gurbaz,Afghanistan,650,Wicket-keeper/Batter,,0,0,0,0,0,49,0,0,164,0,0,0,0,36,0,0,60,0,0,0
 Somansh,Roelof van der Merwe,Netherlands,220,All-rounder,Y,0,0,0,0,65,0,0,13,0,0,18,0,0,0,0,0,21,0,0,0
 Somansh,Tilak Varma,India,1950,Batter,,0,1,0,0,71,0,0,0,0,53,0,0,86,0,0,0,57,0,0,0
-Somansh,Varun Chakaravarthy,India,1550,Spinner,,1,0,0,0,54,0,0,0,0,127,0,0,84,0,0,0,137,0,0,0
+Somansh,Varun Chakaravarthy,India,1550,Spinner,,1,0,1,0,54,0,0,0,0,127,0,0,84,0,0,0,137,0,0,0
 Somansh,Khwaja Nafay,Pakistan,100,Wicket-keeper/Batter,,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 Somansh,Devon Conway,New Zealand,100,Batter,,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 Somansh,Balance Left,NA,0,NA,,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,20,0
