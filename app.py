@@ -359,6 +359,46 @@ team_df = team_df.merge(
 
 team_df["Watchlist"] = team_df["Owner"].map(owner_watch_map)
 
+# --------------------------------------------------
+# CALCULATE TOP TEAM STREAK
+# --------------------------------------------------
+def calculate_top_team_streak():
+
+    daily_leaders = []
+
+    for d in day_numbers:
+
+        temp = calculate_points(d)
+
+        leader_df = (
+            temp.groupby("owner_name")["player_points"]
+            .sum()
+            .reset_index()
+            .sort_values("player_points", ascending=False)
+        )
+
+        if not leader_df.empty:
+            leader = leader_df.iloc[0]["owner_name"]
+            daily_leaders.append(leader)
+
+    # calculate current streak
+    current_streak = 0
+    streak_team = None
+
+    for leader in reversed(daily_leaders):
+
+        if streak_team is None:
+            streak_team = leader
+            current_streak = 1
+
+        elif leader == streak_team:
+            current_streak += 1
+
+        else:
+            break
+
+    return streak_team, current_streak
+
 
 with tab1:
     # --------------------------------------------------
@@ -379,6 +419,7 @@ with tab1:
     total_teams = team_df.shape[0]
     top_team = team_df.iloc[0]["Owner"]
     total_points = round(team_df["Total Points"].sum(), 1)
+    streak_team, streak_days = calculate_top_team_streak()
 
     # --------------------------------------------------
     # KPI SECTION
@@ -394,13 +435,13 @@ with tab1:
             unsafe_allow_html=True
         )
 
-    with k2:
-        st.markdown(
-            f"<div class='kpi-card'><h2>Top Team</h2><p>{top_team}</p></div>",
-            unsafe_allow_html=True
-        )
+    # with k2:
+    #     st.markdown(
+    #         f"<div class='kpi-card'><h2>Top Team</h2><p>{top_team}</p></div>",
+    #         unsafe_allow_html=True
+    #     )
 
-    with k3:
+    with k2:
         st.markdown(
             f"""
             <div class='kpi-card'>
@@ -408,6 +449,20 @@ with tab1:
                 <p>{top_player_name}</p>
                 <span style="font-size:14px;color:#9ca3af;">
                     {top_player_points} pts
+                </span>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    with k3:
+        st.markdown(
+            f"""
+            <div class='kpi-card'>
+                <h2>🔥 Top Team Streak</h2>
+                <p>{streak_team}</p>
+                <span style="font-size:14px;color:#9ca3af;">
+                    {streak_days} day(s)
                 </span>
             </div>
             """,
