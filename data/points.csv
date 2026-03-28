@@ -85,7 +85,7 @@ Pritesh,Quinton De Kock,MI,1150,Wicketkeeper,N,
 Pritesh,Marcus Stoinis,PBKS,190,All-rounder,N,
 Pritesh,Brydon Carse,SRH,100,All-rounder,N,
 Pritesh,Eshan Malinga,SRH,100,Bowler,N,
-Pritesh,Bonus,,,,N,350
+Pritesh,Bonus-Pritesh,NA,NA,NA,N,350
 Lalit,Axar Patel,DC,930,All-rounder,N,
 Lalit,Dhruv Jurel,RR,520,Wicketkeeper,N,
 Lalit,Hardik Pandya,MI,1300,All-rounder,N,
@@ -109,7 +109,7 @@ Mahesh,Harshal Patel,SRH,450,All-rounder,N,
 Mahesh,Mohammed Shami,LSG,250,Bowler,N,
 Mahesh,Naman Dhir,MI,300,All-rounder,N,
 Mahesh,Shardul Thakur,MI,100,All-rounder,N,
-Mahesh,Shreyas Iyer,PBKS,2000,Batter,N,200
+Mahesh,Shreyas Iyer,PBKS,2000,Batter,N,
 Mahesh,Shubman Gill,GT,1600,Batter,N,
 Mahesh,Zeeshan Ansari,SRH,200,Bowler,N,
 Mahesh,Dewald Brevis,CSK,470,Batter,N,
@@ -118,10 +118,10 @@ Mahesh,T Natarajan,DC,180,Bowler,N,
 Mahesh,Jason Holder,GT,500,All-rounder,N,
 Mahesh,Sunil Narine,KKR,800,All-rounder,N,
 Mahesh,Marco Jansen,PBKS,550,All-rounder,N,
-Mahesh,Vaibhav Sooryavanshi,RR,900,Batter,N,100
+Mahesh,Vaibhav Sooryavanshi,RR,900,Batter,N,
 Mahesh,Lhuan-dre Pretorius,RR,100,Batter,N,
 Mahesh,Jacob Duffy,RCB,100,Bowler,N,
-Mahesh,Bonus,,,,N,50
+Mahesh,Bonus-Mahesh,NA,NA,NA,N,50
 Ravi,Abdul Samad,LSG,100,Batter,N,
 Ravi,Abhishek Sharma,SRH,2300,All-rounder,N,
 Ravi,Angkrish Raghuvanshi,KKR,710,Batter,N,
@@ -140,4 +140,4 @@ Ravi,Rovman Powell,KKR,100,All-rounder,N,
 Ravi,Varun Chakravarthy,KKR,800,Bowler,N,
 Ravi,Anrich Nortje,LSG,100,Bowler,N,
 Ravi,Jofra Archer,RR,200,Bowler,N,
-Ravi,Bonus,,,,N,50
+Ravi,Bonus-Ravi,NA,NA,NA,N,50
