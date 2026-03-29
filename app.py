@@ -408,9 +408,9 @@ with tab3:
 # ==================================================
 with tab4:
 
-    squad_df = df.groupby(["owner_name","franchise"])["player_name"].count().reset_index()
+    squad_df = df.groupby(["owner_name","franchise"])["player_count"].count().reset_index()
 
-    fig = px.bar(squad_df, x="owner_name", y="player_name", color="franchise", text_auto=True)
+    fig = px.bar(squad_df, x="owner_name", y="player_count", color="franchise", text_auto=True)
     fig.update_layout(barmode="stack", template="plotly_dark")
 
     st.plotly_chart(fig, use_container_width=True)
