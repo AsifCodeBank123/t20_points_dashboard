@@ -707,8 +707,8 @@ with tab5:
         eligible_players = df[
             (df["player_name"] != selected_player) &
             (df["owner_name"] != selected_owner) &
-            (df["bid_price"] <= bid_price + 50) &   # ✅ ONLY upper limit
-            (df["total_points"] <= player_points + 50)
+            (df["bid_price"] <= bid_price + 50) &          # ✅ upper limit only
+            (df["total_points"] <= player_points + 50)     # ✅ upper limit only
         ].copy()
 
     # -------------------------------
