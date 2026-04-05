@@ -1,10 +1,15 @@
 import streamlit as st
-import plotly.express as px
 import pandas as pd
 
 from utils.data_loader import load_data, load_matches, load_captains
-from utils.calculator import calculate_points
-from utils.helpers import build_watchlist
+from utils.standings import prepare_team_standings
+
+from tabs.tab1_rankings import render_tab1
+from tabs.tab2_players import render_tab2
+from tabs.tab3_insights import render_tab3
+from tabs.tab4_squad import render_tab4
+from tabs.tab5_replacement import render_tab5
+from tabs.tab6_match_points import render_tab6
 
 # ----------------------------------------
 # CONFIG
@@ -31,12 +36,17 @@ cap_df = load_captains()
 day_cols = [c for c in df.columns if c.startswith("day")]
 day_numbers = sorted([int(c.replace("day","")) for c in day_cols])
 
-selected_day = st.sidebar.selectbox("📅 Select Day",day_numbers,index=len(day_numbers)-1)
+selected_day = st.sidebar.selectbox(
+    "📅 Select Day",
+    day_numbers,
+    index=len(day_numbers)-1
+)
+
+effective_day = max(selected_day - 1, 1)
 
 # ----------------------------------------
-# SIDEBAR (IMPROVED)
+# SIDEBAR
 # ----------------------------------------
-
 matches_left = TOTAL_MATCHES - selected_day + 1
 
 st.sidebar.markdown(f"""
@@ -62,109 +72,43 @@ st.sidebar.markdown("""
 • Focus on active franchises  
 """)
 
-effective_day = max(selected_day - 1, 1)
-
-# ----------------------------------------
-# CALCULATIONS
-# ----------------------------------------
-scored_df = calculate_points(df, cap_df, effective_day)
-watch_map = build_watchlist(df, matches_df, cap_df, selected_day)
-
-team_df = (
-    scored_df.groupby("owner_name")["player_points"]
-    .sum().reset_index()
-    .rename(columns={"owner_name":"Owner","player_points":"Points"})
-    .sort_values("Points", ascending=False)
+team_df, scored_df, top_owner, low_owner, max_points, min_points = prepare_team_standings(
+    df, cap_df, matches_df, selected_day, effective_day
 )
 
-team_df["Rank"] = range(1, len(team_df)+1)
-team_df["Watchlist"] = team_df["Owner"].map(watch_map)
-
-
-
 # ----------------------------------------
-# MOVEMENT
+# VISITOR COUNTER
 # ----------------------------------------
-if effective_day > 1:
-    prev_df = calculate_points(df, cap_df, effective_day - 1)
-
-    prev_team = (
-        prev_df.groupby("owner_name")["player_points"]
-        .sum().reset_index()
-        .rename(columns={"owner_name": "Owner", "player_points": "Prev"})
-    )
-
-    prev_team["Prev Rank"] = prev_team["Prev"].rank(ascending=False)
-
-    team_df = team_df.merge(prev_team, on="Owner", how="left")
-    team_df["Movement"] = team_df["Prev Rank"] - team_df["Rank"]
-
-else:
-    team_df["Movement"] = 0
-
-#Identify Top Gainer
-
-day_col = f"day{effective_day}"
-
-if day_col in df.columns:
-    day_points = df.groupby("owner_name")[day_col].sum()
-    max_points = day_points.max()
-
-    # List of top owners (handles tie)
-    top_owners = day_points[day_points == max_points].index.tolist()
-else:
-    top_owners = []
-
-#Movement Formatter
-
-def format_movement(row):
-    movement = row["Movement"]
-    owner = row["Owner"]
-
-    # Arrow logic
-    if movement > 0:
-        text = f"▲ +{int(movement)}"
-    elif movement < 0:
-        text = f"▼ {int(movement)}"
-    else:
-        text = "— 0"
-
-    # Add 🔥 AFTER text
-    if owner in top_owners:
-        return f"{text} 🔥"
-
-    return text
-
-team_df["Movement"] = team_df.apply(format_movement, axis=1)
-
-# ----------------------------------------
-# DELTAS
-# ----------------------------------------
-scores = team_df["Points"].values
-
-next_delta = [None] + [round(scores[i-1]-scores[i],1) for i in range(1,len(scores))]
-first_delta = [None] + [round(scores[0]-s,1) for s in scores[1:]]
-
-team_df["Next Rank"] = next_delta
-team_df["1st Rank"] = first_delta
-
 st.markdown("""
 <style>
-.top-counter {display:flex;justify-content:flex-end;align-items:center;margin-top:-10px;margin-bottom:8px;}
+.top-counter {
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    margin-top:-10px;
+    margin-bottom:8px;
+}
 
-.top-counter img {height:24px;}
+.top-counter img {
+    height:24px;
+}
 
 /* Mobile */
-@media (max-width:768px) {.top-counter {justify-content:center;margin-top:0px;}}
+@media (max-width:768px) {
+    .top-counter {
+        justify-content:center;
+        margin-top:0px;
+    }
+}
 </style>
 
 <div class="top-counter">
-    <img src="https://hitscounter.dev/api/hit?url=https%3A%2F%2Fipl-dashboard-random.streamlit.app%2F&label=Visits&icon=github&color=%230d6efd&message=&style=plastic&tz=UTC">
+    <img src="https://hitscounter.dev/api/hit?url=https%3A%2F%2Fipl-dashboard-fe.streamlit.app%2F&label=Visits&icon=github&color=%230d6efd&message=&style=plastic&tz=UTC">
 </div>
 """, unsafe_allow_html=True)
 
 # ----------------------------------------
-# HEADER (NEW)
+# HEADER
 # ----------------------------------------
 st.markdown(f"""
 <div class="header">
@@ -175,11 +119,9 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-
 # ----------------------------------------
 # PROGRESS BAR
 # ----------------------------------------
-
 matches_completed = max(selected_day - 1, 0)
 progress = matches_completed / TOTAL_MATCHES
 percent = int(progress * 100)
@@ -193,76 +135,113 @@ st.markdown(f"""
 st.progress(progress)
 
 # ----------------------------------------
-# Highest & Lowest Gainer
-# ----------------------------------------
-day_col = f"day{effective_day}"
-
-if day_col in df.columns:
-
-    day_points = (
-        df.groupby("owner_name")[day_col]
-        .sum()
-        .reset_index()
-    )
-
-    # Handle NaN
-    day_points[day_col] = pd.to_numeric(day_points[day_col], errors="coerce").fillna(0)
-
-    max_points = day_points[day_col].max()
-    min_points = day_points[day_col].min()
-
-    # Highest gainer
-    top_owner = day_points.loc[
-        day_points[day_col].idxmax(), "owner_name"
-    ] if max_points > 0 else "—"
-
-    # Lowest gainer
-    low_owner = day_points.loc[
-        day_points[day_col].idxmin(), "owner_name"
-    ] if max_points > 0 else "—"
-
-else:
-    top_owner = "—"
-    low_owner = "—"
-
-# ----------------------------------------
-# KPI (NEW)
+# KPI CARDS
 # ----------------------------------------
 k1, k2, k3, k4 = st.columns(4)
 
-top_player = (
-    scored_df.groupby("player_name")["player_points"]
-    .sum().reset_index()
-    .sort_values("player_points", ascending=False)
-    .iloc[0]
-)
+k1.markdown(f"""
+<div style="
+    background: linear-gradient(135deg, rgba(148,163,184,0.12), rgba(100,116,139,0.05));
+    padding:16px;
+    border-radius:16px;
+    border:1px solid rgba(148,163,184,0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-align:center;
+">
+    <div style="font-size:13px; color:#94a3b8; margin-bottom:6px;">
+        📊 Teams
+    </div>
+    <div style="font-size:22px; font-weight:700;">
+        {len(team_df)}
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-k1.markdown(f"<div class='card'><h4>Teams</h4><h2>{len(team_df)}</h2></div>", unsafe_allow_html=True)
 
-k2.markdown(f"<div class='card highlight'><h4>Leader</h4><h2>{team_df.iloc[0]['Owner']}</h2></div>", unsafe_allow_html=True)
+k2.markdown(f"""
+<div style="
+    background: linear-gradient(135deg, rgba(251,191,36,0.18), rgba(245,158,11,0.08));
+    padding:16px;
+    border-radius:16px;
+    border:1px solid rgba(251,191,36,0.3);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-align:center;
+">
+    <div style="font-size:13px; color:#94a3b8; margin-bottom:6px;">
+        🏆 Leader
+    </div>
+    <div style="font-size:22px; font-weight:700;">
+        {team_df.iloc[0]['Owner']}
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-k3.markdown(f"""<div class='card'><h4>🔥 Highest Gainer</h4><h2>{top_owner} ({int(max_points)}pts)</h2></div>""", unsafe_allow_html=True)
+k3.markdown(f"""
+<div style="
+    background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(16,185,129,0.08));
+    padding:16px;
+    border-radius:16px;
+    border:1px solid rgba(34,197,94,0.25);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-align:center;
+">
+    <div style="font-size:13px; color:#94a3b8; margin-bottom:6px;">
+        🔥 Highest Gainer
+    </div>
+    <div style="font-size:22px; font-weight:700;">
+        {top_owner}
+    </div>
+    <div style="font-size:13px; color:#22c55e;">
+        {int(max_points)} pts
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-k4.markdown(f"""<div class='card'><h4>🧊 Lowest Gainer</h4><h2>{low_owner} ({int(min_points)}pts)</h2></div>""", unsafe_allow_html=True)
+
+k4.markdown(f"""
+<div style="
+    background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(37,99,235,0.08));
+    padding:16px;
+    border-radius:16px;
+    border:1px solid rgba(59,130,246,0.25);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-align:center;
+">
+    <div style="font-size:13px; color:#94a3b8; margin-bottom:6px;">
+        🧊 Lowest Gainer
+    </div>
+    <div style="font-size:22px; font-weight:700;">
+        {low_owner}
+    </div>
+    <div style="font-size:13px; color:#3b82f6;">
+        {int(min_points)} pts
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
 
 # ----------------------------------------
 # TABS
 # ----------------------------------------
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["🏆 Rankings","👥 Players","📊 Insights"," 🎯 Squad Composition", "🤝 Replacement","📅 Match Points"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    "🏆 Rankings",
+    "👥 Players",
+    "📊 Insights",
+    "🎯 Squad Composition",
+    "🤝 Replacement",
+    "📅 Match Points"
+])
 
-#helper to compute captain and vc points for captain strategy table
-
+# ----------------------------------------
+# HELPER FUNCTION
+# ----------------------------------------
 def get_c_vc_points(owner, role="captain"):
-    
     oc = cap_df[cap_df["owner_name"] == owner].sort_values("from_day")
-    
     if oc.empty:
         return "—"
-    
-    player_points_list = []
 
+    pts_list = []
     for d in range(1, selected_day + 1):
         day_col = f"day{d}"
         if day_col not in df.columns:
@@ -275,608 +254,41 @@ def get_c_vc_points(owner, role="captain"):
         latest = cap_row.iloc[-1]
         player = latest["captain"] if role == "captain" else latest["vice_captain"]
 
-        player_row = df[
-            (df["owner_name"] == owner) &
-            (df["player_name"] == player)
-        ]
-
+        player_row = df[(df["owner_name"] == owner) & (df["player_name"] == player)]
         if player_row.empty:
             continue
 
-        points = pd.to_numeric(player_row.iloc[0].get(day_col, 0), errors="coerce")
-        points = 0 if pd.isna(points) else points
+        pts = pd.to_numeric(player_row.iloc[0].get(day_col, 0), errors="coerce")
+        pts = 0 if pd.isna(pts) else pts
 
-        multiplier = 2.0 if role == "captain" else 1.5
-        value = round(points * multiplier, 1)
+        mult = 2.0 if role == "captain" else 1.5
+        val = round(pts * mult, 1)
 
-        if value != 0:
-            player_points_list.append(value)
+        if val != 0:
+            pts_list.append(val)
 
-    return "—" if not player_points_list else f"({', '.join(map(str, player_points_list))})"
+    return "—" if not pts_list else f"({', '.join(map(str, pts_list))})"
 
 # ----------------------------------------
-# PLAYER IMPACT SEGMENTATION
+# TAB RENDERING
 # ----------------------------------------
-
-player_totals = (
-    scored_df
-    .groupby(["owner_name", "player_name"])["player_points"]
-    .sum()
-    .reset_index()
-)
-
-# Categorize
-player_totals["category"] = player_totals["player_points"].apply(
-    lambda x: "Dead (<10 points)" if x < 10 else "Active (≥10 points)"
-)
-
-# Count per owner per category
-stack_df = (
-    player_totals
-    .groupby(["owner_name", "category"])["player_name"]
-    .count()
-    .reset_index(name="count")
-)
-
-# ==================================================
-# TAB 1
-# ==================================================
 with tab1:
+    render_tab1(df, team_df, cap_df, selected_day, get_c_vc_points)
 
-    st.markdown(f"""
-    <span style="color:#94a3b8;font-size:0.85rem;">
-    ℹ️ Rankings & movement are based on completed matches. Watchlist shows upcoming players for Day {selected_day}.
-    </span>
-    """, unsafe_allow_html=True)
-
-    st.markdown("### 🏆 Team Rankings")
-
-    display_df = team_df[
-        ["Rank", "Owner", "Points", "Movement", "Next Rank", "1st Rank", "Watchlist"]
-    ].rename(columns={
-        "Points": "Total Points",
-        "Watchlist": f"Watchlist (Day {selected_day})"
-    })
-
-    # 🔥 Highlight Top 3
-    def highlight_top3(row):
-        if row["Rank"] == 1:
-            style = "background-color:#FFD700;color:black;font-weight:800"
-        elif row["Rank"] == 2:
-            style = "background-color:#C0C0C0;color:black;font-weight:700"
-        elif row["Rank"] == 3:
-            style = "background-color:#CD7F32;color:black;font-weight:700"
-        else:
-            style = ""
-        return [style] * len(row)
-
-    styled_df = (
-        display_df
-        .style
-        .format({
-            "Total Points": "{:.1f}",
-            "Next Rank": "{:.1f}",
-            "1st Rank": "{:.1f}"
-        })
-        .apply(highlight_top3, axis=1)
-        .set_properties(**{"text-align": "center"})
-        .set_table_styles([{"selector": "th", "props": [("text-align", "center")]}])
-    )
-
-    st.dataframe(
-        styled_df,
-        use_container_width=True,
-        hide_index=True
-    )
-
-    st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
-
-    # ==================================================
-    # 🧠 CAPTAIN STRATEGY (FINAL CLEAN VERSION)
-    # ==================================================
-    st.markdown("### 🧠 Captain Strategy")
-
-    cap_df.columns = [c.lower() for c in cap_df.columns]
-
-    # 🔧 Clean history + return changes count
-    def format_history(series):
-        if series.empty:
-            return "—", 0
-
-        cleaned = []
-        prev = None
-
-        for name in series.tolist():
-            if name != prev:
-                cleaned.append(name)
-                prev = name
-
-        history_str = cleaned[0] if len(cleaned) == 1 else " → ".join(cleaned)
-        changes = max(len(cleaned) - 1, 0)
-
-        return history_str, changes
-
-    rows = []
-
-    for owner in df["owner_name"].unique():
-
-        oc = cap_df[
-            cap_df["owner_name"] == owner
-        ].sort_values("from_day")
-
-        if not oc.empty:
-            captain_history, cap_changes = format_history(oc["captain"])
-            vc_history, vc_changes = format_history(oc["vice_captain"])
-        else:
-            captain_history, vc_history = "—", "—"
-            cap_changes, vc_changes = 0, 0
-
-        # ✅ Total changes (Captain + VC)
-        total_changes = cap_changes + vc_changes
-
-        rows.append({
-            "Owner": owner,
-            "Captain": captain_history,
-            "Cap Points": get_c_vc_points(owner, "captain"),
-            "Vice Captain": vc_history,
-            "VC Points": get_c_vc_points(owner, "vc"),
-            "Changes": total_changes
-        })
-
-    cap_table = pd.DataFrame(rows)
-
-    st.dataframe(
-        cap_table,
-        use_container_width=True,
-        hide_index=True
-    )
-
-# ==================================================
-# TAB 2
-# ==================================================
 with tab2:
+    render_tab2(df, scored_df, cap_df, selected_day)
 
-    st.markdown("## 👥 Player Breakdown by Owner")
-
-    owner_list = sorted(df["owner_name"].unique())
-    selected_owner = st.selectbox("Select Owner", owner_list)
-
-    # --------------------------------------------------
-    # AGGREGATE TOTAL POINTS (SORTED DESC)
-    # --------------------------------------------------
-    owner_points_df = (
-        scored_df
-        .loc[scored_df["owner_name"] == selected_owner]
-        .groupby(["player_name", "franchise"])["player_points"]
-        .sum()
-        .reset_index()
-        .sort_values("player_points", ascending=False)
-    )
-
-    # --------------------------------------------------
-    # GET CURRENT CAPTAIN / VC (DYNAMIC)
-    # --------------------------------------------------
-    cap_df.columns = [c.lower() for c in cap_df.columns]
-
-    owner_caps = (
-        cap_df[
-            (cap_df["owner_name"] == selected_owner) &
-            (cap_df["from_day"] <= selected_day)
-        ]
-        .sort_values("from_day")
-    )
-
-    if not owner_caps.empty:
-        latest = owner_caps.iloc[-1]
-        current_c = latest["captain"]
-        current_vc = latest["vice_captain"]
-    else:
-        current_c = None
-        current_vc = None
-
-    # --------------------------------------------------
-    # MATCH-WISE GAINS (NO ZERO, WITH MULTIPLIER)
-    # --------------------------------------------------
-    def get_player_daywise_gains(player_name):
-
-        player_row = df[
-            (df["owner_name"] == selected_owner) &
-            (df["player_name"] == player_name)
-        ]
-
-        if player_row.empty:
-            return "—"
-
-        row = player_row.iloc[0]
-        gains = []
-
-        for d in range(1, selected_day + 1):
-
-            day_col = f"day{d}"
-            if day_col not in df.columns:
-                continue
-
-            points = pd.to_numeric(row.get(day_col, 0), errors="coerce")
-            points = 0 if pd.isna(points) else points
-
-            # --- dynamic captain lookup ---
-            cap_row = owner_caps[owner_caps["from_day"] <= d]
-            if not cap_row.empty:
-                latest_cap = cap_row.iloc[-1]
-                c = latest_cap["captain"]
-                vc = latest_cap["vice_captain"]
-            else:
-                c, vc = None, None
-
-            multiplier = 1.0
-
-            if player_name == c:
-                multiplier = 2.0
-            elif player_name == vc:
-                multiplier = 1.5
-
-            value = round(points * multiplier, 1)
-
-            if value != 0:
-                gains.append(value)
-
-        return "—" if not gains else f"({', '.join(map(str, gains))})"
-
-    owner_points_df["Match-wise Gains"] = owner_points_df["player_name"].apply(
-        get_player_daywise_gains
-    )
-
-    # --------------------------------------------------
-    # CAPTAIN / VC LABEL
-    # --------------------------------------------------
-    def cv_label(player):
-        if player == current_c:
-            return "🧢 Captain"
-        if player == current_vc:
-            return "🎖️ Vice Captain"
-        return ""
-
-    owner_points_df["C / VC"] = owner_points_df["player_name"].apply(cv_label)
-
-    # --------------------------------------------------
-    # FINAL RENAME
-    # --------------------------------------------------
-    owner_points_df = owner_points_df.rename(columns={
-        "player_name": "Player",
-        "franchise": "Franchise",
-        "player_points": "Points"
-    })
-
-    # --------------------------------------------------
-    # STYLING
-    # --------------------------------------------------
-    def highlight_cv(row):
-
-        if row["C / VC"] == "🧢 Captain":
-            return [
-                "background-color:rgba(251,191,36,0.15);"
-                "border-left:4px solid #fbbf24;"
-                "font-weight:600"
-            ] * len(row)
-
-        if row["C / VC"] == "🎖️ Vice Captain":
-            return [
-                "background-color:rgba(56,189,248,0.15);"
-                "border-left:4px solid #38bdf8;"
-                "font-weight:600"
-            ] * len(row)
-
-        return [""] * len(row)
-
-    styled_owner_df = (
-        owner_points_df
-        .style
-        .format({"Points": "{:.1f}"})
-        .apply(highlight_cv, axis=1)
-    )
-
-    st.dataframe(
-        styled_owner_df,
-        use_container_width=True,
-        hide_index=True
-    )
-
-# ==================================================
-# TAB 3
-# ==================================================
 with tab3:
+    render_tab3(df, scored_df, team_df, selected_day)
 
-    st.markdown("### 📊 Insights")
-
-    col1, col2 = st.columns(2)
-
-    fig1 = px.bar(team_df, x="Owner", y="Points")
-    fig1.update_layout(template="plotly_dark")
-    col1.plotly_chart(fig1, use_container_width=True)
-
-    franchise_df = scored_df.groupby("franchise")["player_points"].sum().reset_index()
-
-    fig2 = px.pie(franchise_df, names="franchise", values="player_points")
-    fig2.update_layout(template="plotly_dark")
-    col2.plotly_chart(fig2, use_container_width=True)
-
-    fig = px.bar(
-        stack_df,
-        x="owner_name",
-        y="count",
-        color="category",
-        text_auto=True,
-        barmode="stack",
-        color_discrete_map={
-            "Dead (<10 points)": "#ef4444",     # red
-            "Active (≥10 points)": "#22c55e"    # green
-        }
-    )
-
-    fig.update_layout(
-        template="plotly_dark",
-        title="📊 Squad Quality (Dead vs Active Players)",
-        xaxis_title="Owner",
-        yaxis_title="No. of Players",
-        legend_title=""
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
-
-# ==================================================
-# TAB 4
-# ==================================================
 with tab4:
+    render_tab4(df, cap_df, selected_day)
 
-    squad_df = df.groupby(["owner_name", "franchise"]).size().reset_index(name="player_count")
-
-    fig = px.bar(
-        squad_df,
-        x="owner_name",
-        y="player_count",
-        color="franchise",
-        text_auto=True
-    )
-
-    fig.update_layout(barmode="stack", template="plotly_dark")
-
-    st.plotly_chart(fig, use_container_width=True)
-
-# ==================================================
-# TAB 5 - REPLACEMENT
-# ==================================================
 with tab5:
-
-    st.subheader("🔁 Player Replacement")
-
-    # -------------------------------
-    # 🔹 Dynamic Day Columns
-    # -------------------------------
-    import re
-
-    day_cols = sorted(
-        [col for col in df.columns if col.startswith("day")],
-        key=lambda x: int(re.findall(r'\d+', x)[0])
-    )
-
-    df[day_cols] = df[day_cols].apply(pd.to_numeric, errors="coerce").fillna(0)
-    df["total_points"] = df[day_cols].sum(axis=1)
-
-    # -------------------------------
-    # 🔹 Owner Selection
-    # -------------------------------
-    owners = sorted(df["owner_name"].unique())
-
-    selected_owner = st.selectbox(
-        "Select Owner",
-        owners,
-        key="tab5_owner"
-    )
-
-    # -------------------------------
-    # 🔹 Player Selection
-    # -------------------------------
-    owner_players = df[df["owner_name"] == selected_owner]
-
-    selected_player = st.selectbox(
-        "Select Player to Replace",
-        owner_players["player_name"],
-        key="tab5_player"
-    )
-
-    # -------------------------------
-    # 🔹 Selected Player Details
-    # -------------------------------
-    player_data = owner_players[
-        owner_players["player_name"] == selected_player
-    ].iloc[0]
-
-    bid_price = player_data["bid_price"]
-    player_points = player_data["total_points"]
-
-    st.markdown(f"""
-    **Selected Player:** {selected_player}  
-    💰 Price: {bid_price}  
-    📊 Total Points: {player_points}
-    """)
-
-    # -------------------------------
-    # 🔹 Eligibility Check
-    # -------------------------------
-    if bid_price < 350:
-        st.error("❌ Not eligible for replacement (Price < $350)")
-        eligible_players = None
-    else:
-        st.success("✅ Eligible for replacement")
-
-        # Show allowed price range
-        st.caption(f"Allowed price: ≤ {int(bid_price + 50)}")
-
-        # -------------------------------
-        # 🔹 Eligible Players Filter
-        # -------------------------------
-        eligible_players = df[
-            (df["player_name"] != selected_player) &
-            (df["owner_name"] != selected_owner) &
-            (df["bid_price"] <= bid_price + 50) &          # ✅ upper limit only
-            (df["total_points"] <= player_points + 50)     # ✅ upper limit only
-        ].copy()
-
-    # -------------------------------
-    # 🔹 Display Results
-    # -------------------------------
-    if eligible_players is not None:
-
-        if eligible_players.empty:
-            st.warning("No eligible replacement players found.")
-        else:
-            eligible_players = eligible_players[
-                ["player_name", "owner_name", "bid_price", "total_points"]
-            ].sort_values(by="total_points", ascending=False)
-
-            # Add point difference
-            eligible_players["point_diff"] = (
-                eligible_players["total_points"] - player_points
-            )
-
-            # Highlight better players
-            def highlight(row):
-                if row["point_diff"] > 0:
-                    return ["background-color: rgba(34,197,94,0.2)"] * len(row)
-                return [""] * len(row)
-
-            # ✅ Apply format (NO decimals)
-            st.dataframe(
-                eligible_players.style
-                    .format({
-                        "bid_price": "{:.0f}",
-                        "total_points": "{:.0f}",
-                        "point_diff": "{:.0f}"
-                    })
-                    .apply(highlight, axis=1),
-                use_container_width=True,
-                hide_index=True
-            )
-
-        # -------------------------------
-        # 🔹 Divider
-        # -------------------------------
-        st.markdown("---")
-
-        # -------------------------------
-        # 🔹 Rules
-        # -------------------------------
-        st.info("""
-        📌 **Replacement Rules**
-
-        1. Player price must be ≥ $350  
-        2. The replacement player should be priced at most at $50 higher than the ruled out player
-        3. The replacement players fantasy XI points should be equal to or max 50 points higher the ruled out player 
-        4. Points count from next match only  
-        5. If player is already C/VC in another team, cannot assign C/VC again  
-        """)
+    render_tab5(df, selected_day)
 
 with tab6:
-
-        st.subheader("📅 Match-wise Points")
-
-        # -------------------------------
-        # 🔹 Day Selection
-        # -------------------------------
-        day_list = sorted(matches_df["Day"].unique())
-
-        selected_day_mp = st.selectbox(
-            "Select Day",
-            day_list,
-            key="mp_day"
-        )
-
-        # -------------------------------
-        # 🔹 Get Matches
-        # -------------------------------
-        rows = matches_df[matches_df["Day"] == selected_day_mp]
-
-        teams = []
-        for _, r in rows.iterrows():
-            teams.extend([t.strip() for t in r["Teams"].split(",")])
-
-        # Create match pairs
-        matches = [
-            (teams[i], teams[i+1])
-            for i in range(0, len(teams), 2)
-            if i + 1 < len(teams)
-        ]
-
-        if not matches:
-            st.warning("No matches found for this day.")
-            st.stop()
-
-        # -------------------------------
-        # 🔹 Match Selection
-        # -------------------------------
-        match_options = list(range(1, len(matches) + 1))
-
-        selected_match_no = st.selectbox(
-            "Select Match",
-            match_options,
-            key="mp_match"
-        )
-
-        team1, team2 = matches[selected_match_no - 1]
-
-        st.markdown(f"### 🏏 {team1} vs {team2}")
-
-        # -------------------------------
-        # 🔹 Points Extraction
-        # -------------------------------
-        day_col = f"day{selected_day_mp}"
-
-        if day_col not in df.columns:
-            st.warning("No points data available for this day.")
-            st.stop()
-
-        match_df = df[
-            df["franchise"].isin([team1, team2])
-        ].copy()
-
-        match_df[day_col] = pd.to_numeric(
-            match_df[day_col],
-            errors="coerce"
-        ).fillna(0)
-
-        # -------------------------------
-        # 🔹 Prepare Table
-        # -------------------------------
-        display_df = match_df[
-            ["owner_name", "player_name", "franchise", day_col]
-        ].rename(columns={
-            "owner_name": "Owner",
-            "player_name": "Player",
-            "franchise": "Team",
-            day_col: "Points"
-        }).sort_values("Points", ascending=False)
-
-        if display_df.empty:
-            st.warning("No player data available for this match.")
-            st.stop()
-
-        # -------------------------------
-        # 🔥 Highlight Top Performer
-        # -------------------------------
-        max_pts = display_df["Points"].max()
-
-        def highlight(row):
-            if row["Points"] == max_pts and max_pts > 0:
-                return ["background-color: rgba(34,197,94,0.3)"] * len(row)
-            return [""] * len(row)
-
-        st.dataframe(
-            display_df.style
-                .format({"Points": "{:.0f}"})
-                .apply(highlight, axis=1),
-            use_container_width=True,
-            hide_index=True
-        )
+    render_tab6(df, matches_df, selected_day)
 
 # ----------------------------------------
 # FOOTER
