@@ -367,31 +367,53 @@ with tab1:
     )
     st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
 
-    # CAPTAIN SECTION
+    # ==================================================
+    # 🧠 CAPTAIN STRATEGY (WITH HISTORY)
+    # ==================================================
     st.markdown("### 🧠 Captain Strategy")
 
     cap_df.columns = [c.lower() for c in cap_df.columns]
 
+    # 🔧 Format history with strikeout
+    def format_history(series):
+        if series.empty:
+            return "—"
+
+        names = series.tolist()
+
+        if len(names) == 1:
+            return names[0]
+
+        formatted = [f"<s>{n}</s>" for n in names[:-1]] + [names[-1]]
+        return " → ".join(formatted)
+
     rows = []
 
     for owner in df["owner_name"].unique():
-        oc = cap_df[cap_df["owner_name"]==owner]
 
-        if not oc.empty:
-            latest = oc.iloc[-1]
-            c = latest["captain"]
-            vc = latest["vice_captain"]
-        else:
-            c, vc = "—","—"
+        oc = cap_df[
+            cap_df["owner_name"] == owner
+        ].sort_values("from_day")
+
+        captain_history = format_history(oc["captain"]) if not oc.empty else "—"
+        vc_history = format_history(oc["vice_captain"]) if not oc.empty else "—"
 
         rows.append({
-            "Owner":owner,
-            "Captain":c,
+            "Owner": owner,
+            "Captain": captain_history,
             "Cap Points": get_c_vc_points(owner, "captain"),
-            "Vice Captain":vc,
+            "Vice Captain": vc_history,
             "VC Points": get_c_vc_points(owner, "vc"),
-            "Changes":len(oc)-1
+            "Changes": len(oc) - 1 if not oc.empty else 0
         })
+
+    cap_table = pd.DataFrame(rows)
+
+    # ✅ Render HTML (for strikeout support)
+    st.markdown(
+        cap_table.to_html(escape=False, index=False),
+        unsafe_allow_html=True
+    )
 
     st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
