@@ -333,9 +333,12 @@ with tab1:
 
     display_df = team_df[
         ["Rank", "Owner", "Points", "Movement", "Next Rank", "1st Rank", "Watchlist"]
-    ].rename(columns={"Points": "Total Points",
-                      "Watchlist": f"Watchlist (Day {selected_day})"})
+    ].rename(columns={
+        "Points": "Total Points",
+        "Watchlist": f"Watchlist (Day {selected_day})"
+    })
 
+    # 🔥 Highlight Top 3
     def highlight_top3(row):
         if row["Rank"] == 1:
             style = "background-color:#FFD700;color:black;font-weight:800"
@@ -365,27 +368,33 @@ with tab1:
         use_container_width=True,
         hide_index=True
     )
+
     st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
 
     # ==================================================
-    # 🧠 CAPTAIN STRATEGY (WITH HISTORY)
+    # 🧠 CAPTAIN STRATEGY (FINAL CLEAN VERSION)
     # ==================================================
     st.markdown("### 🧠 Captain Strategy")
 
     cap_df.columns = [c.lower() for c in cap_df.columns]
 
-    # 🔧 Format history with strikeout
+    # 🔧 Clean history + return changes count
     def format_history(series):
         if series.empty:
-            return "—"
+            return "—", 0
 
-        names = series.tolist()
+        cleaned = []
+        prev = None
 
-        if len(names) == 1:
-            return names[0]
+        for name in series.tolist():
+            if name != prev:
+                cleaned.append(name)
+                prev = name
 
-        formatted = [f"<s>{n}</s>" for n in names[:-1]] + [names[-1]]
-        return " → ".join(formatted)
+        history_str = cleaned[0] if len(cleaned) == 1 else " → ".join(cleaned)
+        changes = max(len(cleaned) - 1, 0)
+
+        return history_str, changes
 
     rows = []
 
@@ -395,8 +404,15 @@ with tab1:
             cap_df["owner_name"] == owner
         ].sort_values("from_day")
 
-        captain_history = format_history(oc["captain"]) if not oc.empty else "—"
-        vc_history = format_history(oc["vice_captain"]) if not oc.empty else "—"
+        if not oc.empty:
+            captain_history, cap_changes = format_history(oc["captain"])
+            vc_history, vc_changes = format_history(oc["vice_captain"])
+        else:
+            captain_history, vc_history = "—", "—"
+            cap_changes, vc_changes = 0, 0
+
+        # ✅ Total changes (Captain + VC)
+        total_changes = cap_changes + vc_changes
 
         rows.append({
             "Owner": owner,
@@ -404,18 +420,16 @@ with tab1:
             "Cap Points": get_c_vc_points(owner, "captain"),
             "Vice Captain": vc_history,
             "VC Points": get_c_vc_points(owner, "vc"),
-            "Changes": len(oc) - 1 if not oc.empty else 0
+            "Changes": total_changes
         })
 
     cap_table = pd.DataFrame(rows)
 
-    # ✅ Render HTML (for strikeout support)
-    st.markdown(
-        cap_table.to_html(escape=False, index=False),
-        unsafe_allow_html=True
+    st.dataframe(
+        cap_table,
+        use_container_width=True,
+        hide_index=True
     )
-
-    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
 # ==================================================
 # TAB 2
