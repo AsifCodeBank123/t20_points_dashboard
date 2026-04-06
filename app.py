@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import datetime
 
 from utils.data_loader import load_data, load_matches, load_captains
 from utils.standings import prepare_team_standings
@@ -125,6 +126,9 @@ st.markdown(f"""
     </div>
 </div>
 """, unsafe_allow_html=True)
+
+st.caption(f"📡 Data synced at: {datetime.datetime.now().strftime('%I:%M %p')}")
+st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
 
 # ----------------------------------------
 # PROGRESS BAR
