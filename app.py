@@ -47,6 +47,13 @@ effective_day = max(selected_day - 1, 1)
 # ----------------------------------------
 # SIDEBAR
 # ----------------------------------------
+
+if st.sidebar.button("🔄 Refresh Data"):
+    st.cache_data.clear()
+    st.rerun()
+
+st.sidebar.markdown("---")
+
 matches_left = TOTAL_MATCHES - selected_day + 1
 
 st.sidebar.markdown(f"""

@@ -1,9 +1,23 @@
 import pandas as pd
+import streamlit as st
 import os
 
+#for local csv
+# def load_data():
+#     df = pd.read_csv("data/points.csv")
+#     df.columns = df.columns.str.lower().str.strip().str.replace(" ", "", regex=False)
+#     return df
+
+#for google sheet
+@st.cache_data
 def load_data():
-    df = pd.read_csv("data/points.csv")
-    df.columns = df.columns.str.lower().str.strip().str.replace(" ", "", regex=False)
+
+    sheet_id = "1CrJzdeHFFctEivaPZ1nFsN2OlZ-D6iFeZoG5b0V4GEQ"
+
+    url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv"
+
+    df = pd.read_csv(url)
+
     return df
 
 def load_matches():
