@@ -55,6 +55,10 @@ effective_day = max(selected_day - 1, 1)
 
 if st.sidebar.button("🔄 Refresh Data"):
     st.cache_data.clear()
+
+    ist = pytz.timezone("Asia/Kolkata")
+    # ✅ STORE in session state
+    st.session_state["last_refresh"] = datetime.datetime.now(ist)
     st.rerun()
 
 st.sidebar.markdown("---")
@@ -131,7 +135,12 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-st.caption(f"📡 Data synced at: {current_time.strftime('%I:%M %p')}")
+if "last_refresh" in st.session_state:
+    last = st.session_state["last_refresh"]
+    st.caption(f"📡 Data synced at: {last.strftime('%d %b, %I:%M %p IST')}")
+else:
+    st.caption("📡 Data not refreshed yet")
+    
 st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
 
 # ----------------------------------------
