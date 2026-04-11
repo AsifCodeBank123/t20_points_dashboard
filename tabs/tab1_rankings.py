@@ -12,7 +12,7 @@ def render_tab1(df, team_df, cap_df, selected_day, get_c_vc_points):
     st.markdown("### 🏆 Team Rankings")
 
     display_df = team_df[
-        ["Rank", "Owner", "Points", "Movement", "Next Rank", "1st Rank", "Watchlist"]
+        ["Rank", "Owner", "Points", "Movement", "Next Rank", "1st Rank", "Win %", "Watchlist"]
     ].rename(columns={
         "Points": "Total Points",
         "Watchlist": f"Watchlist (Day {selected_day})"
@@ -36,7 +36,8 @@ def render_tab1(df, team_df, cap_df, selected_day, get_c_vc_points):
         .format({
             "Total Points": "{:.1f}",
             "Next Rank": "{:.1f}",
-            "1st Rank": "{:.1f}"
+            "1st Rank": "{:.1f}",
+            "Win %": "{:.1f}%"
         })
         .apply(highlight_top3, axis=1)
         .set_properties(**{"text-align": "center"})

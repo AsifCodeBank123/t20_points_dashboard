@@ -43,9 +43,40 @@ def prepare_team_standings(df, cap_df, matches_df, selected_day, effective_day):
         team_df["Movement"] = 0
 
     # ----------------------------------------
-    # GAINERS
+    # 🔥 DAILY GAINER (WITH C/VC MULTIPLIER)
     # ----------------------------------------
-    top_owners, top_owner, low_owner, max_points, min_points = get_day_wise_gainers(df, effective_day)
+
+    # Current total (till today)
+    curr_points = (
+        scored_df.groupby("owner_name")["player_points"]
+        .sum()
+    )
+
+    # Previous total (till yesterday)
+    if effective_day > 1:
+        prev_df = calculate_points(df, cap_df, effective_day - 1)
+
+        prev_points = (
+            prev_df.groupby("owner_name")["player_points"]
+            .sum()
+        )
+
+        day_points = curr_points - prev_points
+    else:
+        day_points = curr_points
+
+    # Handle NaN (day 1)
+    day_points = day_points.fillna(curr_points)
+
+    max_points = day_points.max()
+    min_points = day_points.min()
+
+    if max_points > 0:
+        top_owner = day_points.idxmax()
+        low_owner = day_points.idxmin()
+    else:
+        top_owner = "—"
+        low_owner = "—"
 
     # ----------------------------------------
     # MOVEMENT FORMAT
@@ -61,7 +92,7 @@ def prepare_team_standings(df, cap_df, matches_df, selected_day, effective_day):
         else:
             text = "— 0"
 
-        if owner in top_owners:
+        if owner in top_owner:
             return f"{text} 🔥"
 
         return text

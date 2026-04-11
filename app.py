@@ -5,6 +5,7 @@ import pytz
 
 from utils.data_loader import load_data, load_matches, load_captains
 from utils.standings import prepare_team_standings
+from utils.probability import calculate_win_probability
 
 from tabs.tab1_rankings import render_tab1
 from tabs.tab2_players import render_tab2
@@ -91,6 +92,14 @@ st.sidebar.markdown("""
 team_df, scored_df, top_owner, low_owner, max_points, min_points = prepare_team_standings(
     df, cap_df, matches_df, selected_day, effective_day
 )
+
+prob_df, explanations = calculate_win_probability(
+    df, scored_df, matches_df, selected_day
+)
+
+prob_map = prob_df.set_index("Owner")["Win %"]
+
+team_df["Win %"] = team_df["Owner"].map(prob_map)
 
 # ----------------------------------------
 # VISITOR COUNTER
