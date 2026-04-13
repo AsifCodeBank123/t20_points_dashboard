@@ -29,12 +29,17 @@ current_time = datetime.datetime.now(ist)
 with open("style/style.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# ----------------------------------------
-# LOAD DATA
-# ----------------------------------------
-df = load_data()
-matches_df = load_matches()
-cap_df = load_captains()
+if "refresh_trigger" not in st.session_state:
+    st.session_state["refresh_trigger"] = False
+
+@st.cache_data
+def load_all_data():
+    df = load_data()
+    matches_df = load_matches()
+    cap_df = load_captains()
+    return df, matches_df, cap_df
+
+df, matches_df, cap_df = load_all_data()
 
 # ----------------------------------------
 # DAYS
@@ -55,11 +60,17 @@ effective_day = max(selected_day - 1, 1)
 # ----------------------------------------
 
 if st.sidebar.button("🔄 Refresh Data"):
+
+    # Clear cache ONLY on click
     st.cache_data.clear()
 
+    # Store IST time
     ist = pytz.timezone("Asia/Kolkata")
-    # ✅ STORE in session state
     st.session_state["last_refresh"] = datetime.datetime.now(ist)
+
+    # Mark refresh trigger
+    st.session_state["refresh_trigger"] = True
+
     st.rerun()
 
 st.sidebar.markdown("---")
