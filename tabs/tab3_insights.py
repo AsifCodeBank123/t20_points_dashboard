@@ -1,6 +1,6 @@
 import streamlit as st
 import plotly.express as px
-import pandas as pd
+
 
 
 def render_tab3(df, scored_df, team_df, selected_day):

@@ -6,6 +6,7 @@ import pytz
 from utils.data_loader import load_data, load_matches, load_captains
 from utils.standings import prepare_team_standings
 from utils.probability import calculate_win_probability
+from utils.helpers import get_c_vc_points, get_current_c_vc
 
 from tabs.tab1_rankings import render_tab1
 from tabs.tab2_players import render_tab2
@@ -277,47 +278,22 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "📅 Match Points"
 ])
 
-# ----------------------------------------
-# HELPER FUNCTION
-# ----------------------------------------
-def get_c_vc_points(owner, role="captain"):
-    oc = cap_df[cap_df["owner_name"] == owner].sort_values("from_day")
-    if oc.empty:
-        return "—"
 
-    pts_list = []
-    for d in range(1, selected_day + 1):
-        day_col = f"day{d}"
-        if day_col not in df.columns:
-            continue
-
-        cap_row = oc[oc["from_day"] <= d]
-        if cap_row.empty:
-            continue
-
-        latest = cap_row.iloc[-1]
-        player = latest["captain"] if role == "captain" else latest["vice_captain"]
-
-        player_row = df[(df["owner_name"] == owner) & (df["player_name"] == player)]
-        if player_row.empty:
-            continue
-
-        pts = pd.to_numeric(player_row.iloc[0].get(day_col, 0), errors="coerce")
-        pts = 0 if pd.isna(pts) else pts
-
-        mult = 2.0 if role == "captain" else 1.5
-        val = round(pts * mult, 1)
-
-        if val != 0:
-            pts_list.append(val)
-
-    return "—" if not pts_list else f"({', '.join(map(str, pts_list))})"
 
 # ----------------------------------------
 # TAB RENDERING
 # ----------------------------------------
 with tab1:
-    render_tab1(df, team_df, cap_df, selected_day, get_c_vc_points)
+    render_tab1(
+    df,
+    team_df,
+    cap_df,
+    matches_df,
+    scored_df,
+    selected_day,
+    get_c_vc_points,
+    get_current_c_vc
+)
 
 with tab2:
     render_tab2(df, scored_df, cap_df, selected_day)
