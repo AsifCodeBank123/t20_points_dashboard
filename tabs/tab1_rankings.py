@@ -77,38 +77,10 @@ def render_tab1(df, team_df, cap_df,matches_df,scored_df,selected_day, get_c_vc_
             ),
             axis=1
         )
-
-        # --------------------------------------------------
-        # PLAYER AVERAGES
-        # --------------------------------------------------
-        player_avg = (
-            scored_df.groupby("player_name")["player_points"]
-            .sum()
-            .reset_index()
-        )
-
-        def count_matches(row):
-            return sum([
-                1 for d in range(1, selected_day + 1)
-                if pd.to_numeric(row.get(f"day{d}", 0), errors="coerce") != 0
-            ]) or 1
-
-        df["matches_played"] = df.apply(count_matches, axis=1)
-
-        player_avg = player_avg.merge(
-            df[["player_name", "franchise", "matches_played"]],
-            on="player_name",
-            how="left"
-        )
-
-        player_avg["avg_points"] = (
-            player_avg["player_points"] /
-            player_avg["matches_played"]
-        )
-
         # --------------------------------------------------
         # BUILD FORECASTS
         # --------------------------------------------------
+
         all_match_forecasts = {}
         summary_rows = []
 
@@ -123,41 +95,74 @@ def render_tab1(df, team_df, cap_df,matches_df,scored_df,selected_day, get_c_vc_
 
             forecast_rows = []
 
+            # ----------------------------------------
+            # OWNER FORECAST
+            # ----------------------------------------
             for owner, group in df.groupby("owner_name"):
 
                 owner_players = group[
                     group["franchise"].isin(teams)
                 ].copy()
 
-                merged = owner_players.merge(
-                    player_avg[["player_name", "avg_points"]],
-                    on="player_name",
-                    how="left"
-                )
-
                 total = 0
 
-                captain, vice_captain = get_current_c_vc(cap_df,owner,match["Day"])
+                # current captain / VC for that match day
+                captain, vice_captain = get_current_c_vc(
+                    cap_df,
+                    owner,
+                    match["Day"]
+                )
 
-                for _, r in merged.iterrows():
+                # ----------------------------------------
+                # PLAYER FORECAST
+                # ----------------------------------------
+                for _, r in owner_players.iterrows():
 
-                    points = r["avg_points"]
+                    player = r["player_name"]
 
-                    multiplier = 1.0
+                    player_scores = []
 
-                    if r["player_name"] == captain:
-                        multiplier = 2.0
+                    for d in range(1, selected_day + 1):
 
-                    elif r["player_name"] == vice_captain:
-                        multiplier = 1.5
+                        day_col = f"day{d}"
 
-                    total += points * multiplier
+                        pts = pd.to_numeric(
+                            r.get(day_col, 0),
+                            errors="coerce"
+                        )
+
+                        pts = 0 if pd.isna(pts) else pts
+
+                        # ----------------------------------------
+                        # APPLY FORECAST MULTIPLIER
+                        # ----------------------------------------
+                        if player == captain:
+                            pts *= 2
+
+                        elif player == vice_captain:
+                            pts *= 1.5
+
+                        if pts != 0:
+                            player_scores.append(pts)
+
+                    # ----------------------------------------
+                    # PLAYER AVERAGE
+                    # ----------------------------------------
+                    avg_points = (
+                        sum(player_scores) / len(player_scores)
+                        if player_scores else 0
+                    )
+
+                    total += avg_points
 
                 forecast_rows.append({
                     "Owner": owner,
                     "Predicted Points": round(total, 1)
                 })
 
+            # ----------------------------------------
+            # FORECAST DF
+            # ----------------------------------------
             forecast_df = pd.DataFrame(forecast_rows)
 
             forecast_df = forecast_df.sort_values(
@@ -167,17 +172,19 @@ def render_tab1(df, team_df, cap_df,matches_df,scored_df,selected_day, get_c_vc_
 
             all_match_forecasts[match_label] = forecast_df
 
-            # summary row
+            # ----------------------------------------
+            # SUMMARY ROW
+            # ----------------------------------------
             top_row = forecast_df.iloc[0]
 
             summary_rows.append({
                 "Match": match_label,
                 "Top Owner": top_row["Owner"],
-                "Best Forecast": top_row["Predicted Points"]
+                "Best Forecast": round(top_row["Predicted Points"], 1)
             })
 
         # --------------------------------------------------
-        # SUMMARY TABLE
+        # SUMMARY DF
         # --------------------------------------------------
         summary_df = pd.DataFrame(summary_rows)
 
